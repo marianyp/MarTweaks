@@ -1,5 +1,6 @@
 package dev.mariany.martweaks;
 
+import dev.mariany.martweaks.block.ModBlocks;
 import dev.mariany.martweaks.event.server.ServerTickHandler;
 import dev.mariany.martweaks.item.ModItems;
 import dev.mariany.martweaks.packet.Packets;
@@ -18,7 +19,10 @@ public class MarTweaks implements ModInitializer {
     public void onInitialize() {
         Packets.register();
         ServerboundPackets.init();
+
+        ModBlocks.registerModBlocks();
         ModItems.registerModItems();
+
         ServerTickEvents.START_SERVER_TICK.register(ServerTickHandler::onServerTick);
     }
 

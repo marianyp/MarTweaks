@@ -3,11 +3,13 @@
   "package": "dev.mariany.martweaks.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "BlockItemMixin",
     "FenceBlockMixin",
     "LeadItemMixin",
     "LivingEntityMixin",
     "MapStateMixin",
-    "ServerPlayerEntityMixin"
+    "ServerPlayerEntityMixin",
+    "StatTypeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
