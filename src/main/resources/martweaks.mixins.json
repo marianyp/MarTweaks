@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "package": "dev.mariany.martweaks.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "FenceBlockMixin",
+    "LeadItemMixin",
+    "LivingEntityMixin",
+    "MapStateMixin",
+    "ServerPlayerEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "DrawContextMixin"
+  ]
+}
