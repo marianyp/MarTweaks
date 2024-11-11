@@ -1,6 +1,9 @@
 package dev.mariany.martweaks;
 
 import dev.mariany.martweaks.event.server.ServerTickHandler;
+import dev.mariany.martweaks.item.ModItems;
+import dev.mariany.martweaks.packet.Packets;
+import dev.mariany.martweaks.packet.serverbound.ServerboundPackets;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.util.Identifier;
@@ -13,6 +16,9 @@ public class MarTweaks implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        Packets.register();
+        ServerboundPackets.init();
+        ModItems.registerModItems();
         ServerTickEvents.START_SERVER_TICK.register(ServerTickHandler::onServerTick);
     }
 
