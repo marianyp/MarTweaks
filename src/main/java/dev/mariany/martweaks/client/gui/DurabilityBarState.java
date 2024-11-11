@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 public class DurabilityBarState {
     private static final DurabilityBarState INSTANCE = new DurabilityBarState();
 
-    private static final float WARN_PERCENTAGE = 0.7F;
+    private static final int WARN_DURABILITY = 12;
     private static final int BLACK = Colors.BLACK;
     private static final int RED = Colors.RED;
     private static final int YELLOW = Colors.YELLOW;
@@ -32,8 +32,14 @@ public class DurabilityBarState {
     private boolean shouldWarn(ItemStack stack) {
         int maxDamage = stack.getMaxDamage();
         int damage = stack.getDamage();
-        int warnThreshold = MathHelper.floor(maxDamage * WARN_PERCENTAGE);
-        return damage >= warnThreshold;
+        int warnThreshold = MathHelper.floor((float) maxDamage / 2);
+        if (warnThreshold <= 1) {
+            return false;
+        }
+        if (warnThreshold > WARN_DURABILITY) {
+            warnThreshold = WARN_DURABILITY;
+        }
+        return maxDamage - damage <= warnThreshold;
     }
 
     private boolean shouldWarnDanger(ItemStack stack) {
@@ -57,7 +63,7 @@ public class DurabilityBarState {
         if (shouldWarnDanger(stack)) {
             return BAR_WIDTH;
         }
-        return stack.getItemBarStep();
+        return Math.max(1, stack.getItemBarStep());
     }
 
     public void draw(DrawContext context, ItemStack stack, int x, int y) {
