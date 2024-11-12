@@ -5,6 +5,7 @@
   "mixins": [
     "BlockItemMixin",
     "FenceBlockMixin",
+    "GuardianEntityMixin",
     "LeadItemMixin",
     "LivingEntityMixin",
     "MapStateMixin",

@@ -1,9 +1,13 @@
 package dev.mariany.martweaks.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import dev.mariany.martweaks.entity.boss.guardian.ElderGuardianFight;
 import net.minecraft.entity.Leashable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
+import net.minecraft.entity.mob.ElderGuardianEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,5 +23,13 @@ public class LivingEntityMixin {
                 cir.setReturnValue(false);
             }
         }
+    }
+
+    @WrapOperation(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;onKilledBy(Lnet/minecraft/entity/LivingEntity;)V"))
+    public void wrapOnDeath(LivingEntity instance, LivingEntity adversary, Operation<Void> original) {
+        if (instance instanceof ElderGuardianEntity elder) {
+            ElderGuardianFight.onElderDeath(elder);
+        }
+        original.call(instance, adversary);
     }
 }

@@ -1,5 +1,7 @@
 {
   "block.martweaks.sunflower": "Sunflower",
   "entity.martweaks.connected_leash_knot": "Connected Leash Knot",
+  "gamerule.elderSearchRadius": "Elder Guardian Search Radius",
+  "gamerule.elderSearchRadius.description": "Controls the radius searched for alive/dead Elder Guardians.",
   "item.martweaks.broken_arrow": "Broken Arrow"
 }

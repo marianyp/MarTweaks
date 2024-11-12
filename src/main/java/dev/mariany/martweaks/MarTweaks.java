@@ -2,6 +2,7 @@ package dev.mariany.martweaks;
 
 import dev.mariany.martweaks.block.ModBlocks;
 import dev.mariany.martweaks.event.server.ServerTickHandler;
+import dev.mariany.martweaks.gamerule.ModGamerules;
 import dev.mariany.martweaks.item.ModItems;
 import dev.mariany.martweaks.packet.Packets;
 import dev.mariany.martweaks.packet.serverbound.ServerboundPackets;
@@ -20,6 +21,7 @@ public class MarTweaks implements ModInitializer {
         Packets.register();
         ServerboundPackets.init();
 
+        ModGamerules.registerModGamerules();
         ModBlocks.registerModBlocks();
         ModItems.registerModItems();
 
