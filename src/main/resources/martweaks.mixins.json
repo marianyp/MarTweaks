@@ -9,8 +9,10 @@
     "LeadItemMixin",
     "LivingEntityMixin",
     "MapStateMixin",
+    "RevengeGoalMixin",
     "ServerPlayerEntityMixin",
-    "StatTypeMixin"
+    "StatTypeMixin",
+    "accessor.TrackTargetGoalAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
