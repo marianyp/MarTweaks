@@ -3,5 +3,9 @@
   "entity.martweaks.connected_leash_knot": "Connected Leash Knot",
   "gamerule.elderSearchRadius": "Elder Guardian Search Radius",
   "gamerule.elderSearchRadius.description": "Controls the radius searched for alive/dead Elder Guardians.",
+  "gamerule.strictEngagement": "Strict Engagement",
+  "gamerule.strictEngagement.description": "Tracks blocks/items that a player has gained experience from to prevent cheesing/farming experience.",
+  "gamerule.maxEngagementRate": "Max Engagement Rate",
+  "gamerule.maxEngagementRate.description": "Determines the max possible engagements until a player receives their next experience reward for mining, building, etc.",
   "item.martweaks.broken_arrow": "Broken Arrow"
 }

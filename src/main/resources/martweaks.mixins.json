@@ -11,6 +11,7 @@
     "MapStateMixin",
     "RevengeGoalMixin",
     "ServerPlayerEntityMixin",
+    "StatHandlerMixin",
     "StatTypeMixin",
     "accessor.TrackTargetGoalAccessor"
   ],

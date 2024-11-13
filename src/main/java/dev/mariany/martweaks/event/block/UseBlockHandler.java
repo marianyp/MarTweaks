@@ -1,5 +1,6 @@
 package dev.mariany.martweaks.event.block;
 
+import dev.mariany.martweaks.util.ModUtils;
 import dev.mariany.martweaks.util.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -10,11 +11,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.network.packet.s2c.play.PlaySoundFromEntityS2CPacket;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -116,10 +114,6 @@ public class UseBlockHandler {
     }
 
     private static void playTeleportSound(PlayerEntity player) {
-        if (player instanceof ServerPlayerEntity serverPlayer) {
-            serverPlayer.networkHandler.sendPacket(
-                    new PlaySoundFromEntityS2CPacket(RegistryEntry.of(SoundEvents.BLOCK_RESPAWN_ANCHOR_CHARGE),
-                            SoundCategory.AMBIENT, serverPlayer, 0.5F, 2F, serverPlayer.getRandom().nextLong()));
-        }
+        ModUtils.sendSoundToClient(player, SoundEvents.BLOCK_RESPAWN_ANCHOR_CHARGE, SoundCategory.AMBIENT, 0.5F, 2F);
     }
 }
