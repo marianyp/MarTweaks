@@ -28,8 +28,8 @@ public class EngagementManager {
     public static final Map<StatType<?>, QuadFunction<ServerPlayerEntity, Stat<?>, Integer, Integer, Boolean>> STAT_HANDLERS = Map.of(
             Stats.USED, Building::handle, Stats.CRAFTED, Crafting::handle, Stats.MINED, Mining::handle);
 
-    private static final int MIN_REWARD = 2;
-    private static final int MAX_REWARD = 8;
+    private static final int MIN_XP_REWARD = 2;
+    private static final int MAX_XP_REWARD = 8;
 
     public static void onStatIncrement(ServerPlayerEntity player, Stat<?> stat) {
         StatType<?> type = stat.getType();
@@ -45,7 +45,7 @@ public class EngagementManager {
     }
 
     static void rewardPlayer(ServerPlayerEntity player) {
-        int xpReward = MathHelper.nextInt(player.getRandom(), MIN_REWARD, MAX_REWARD);
+        int xpReward = MathHelper.nextInt(player.getRandom(), MIN_XP_REWARD, MAX_XP_REWARD);
         player.addExperience(xpReward);
         playGainExperienceSound(player);
     }
