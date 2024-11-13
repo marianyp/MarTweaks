@@ -30,9 +30,35 @@ public class MapRendererMixin {
             List<MapDecoration> decorations = StreamSupport.stream(iterable.spliterator(), false).toList();
             List<MapDecoration> updated = new ArrayList<>();
 
+            int scale = 1 << instance.scale;
+            float playerRelativeX = (float) (player.getX() - (double) instance.centerX) / (float) scale;
+            float playerRelativeZ = (float) (player.getZ() - (double) instance.centerZ) / (float) scale;
+
+            // Threshold distance to consider an icon "close enough" to the player
+            double closestDistance = Double.MAX_VALUE;
+            MapDecoration closestDecoration = null;
+
+            // Find the closest player decoration
             for (MapDecoration decoration : decorations) {
-                if (decoration.type().matches(MapDecorationTypes.PLAYER_OFF_LIMITS) || decoration.type()
+                if (decoration.type().matches(MapDecorationTypes.PLAYER) || decoration.type()
+                        .matches(MapDecorationTypes.PLAYER_OFF_LIMITS) || decoration.type()
                         .matches(MapDecorationTypes.PLAYER_OFF_MAP)) {
+
+                    // Calculate Euclidean distance
+                    double dx = playerRelativeX - decoration.x();
+                    double dz = playerRelativeZ - decoration.z();
+                    double distance = Math.sqrt(dx * dx + dz * dz);
+
+                    // Update if this decoration is closer to the player's position
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closestDecoration = decoration;
+                    }
+                }
+            }
+
+            for (MapDecoration decoration : decorations) {
+                if (decoration.equals(closestDecoration) && !decoration.type().matches(MapDecorationTypes.PLAYER)) {
                     updated.add(new MapDecoration(MapDecorationTypes.PLAYER, decoration.x(), decoration.z(),
                             getRotation(player, world), decoration.name()));
                 } else {
