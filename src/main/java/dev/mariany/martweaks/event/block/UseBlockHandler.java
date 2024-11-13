@@ -31,8 +31,6 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 public class UseBlockHandler {
-    private static final Map<RegistryKey<World>, Block> PLATFORMS = Map.of(World.OVERWORLD, Blocks.DIRT, World.NETHER,
-            Blocks.NETHERRACK, World.END, Blocks.END_STONE);
     private static final Map<Pair<Item, Block>, BiFunction<PlayerEntity, ItemStack, ActionResult>> HANDLERS = Map.of(
             new Pair<>(Items.RECOVERY_COMPASS, Blocks.LODESTONE), UseBlockHandler::recover);
 
@@ -111,10 +109,8 @@ public class UseBlockHandler {
 
         if (!Block.isFaceFullSquare(floorState.getCollisionShape(world, floorPos), Direction.UP)) {
             if (floorState.getHardness(world, floorPos) >= 0) {
-                Block platformBlock = PLATFORMS.get(world.getRegistryKey());
-
                 world.breakBlock(floorPos, true);
-                world.setBlockState(floorPos, platformBlock.getDefaultState());
+                world.setBlockState(floorPos, Blocks.SCULK_CATALYST.getDefaultState());
             }
         }
     }
