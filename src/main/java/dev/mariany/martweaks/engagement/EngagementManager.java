@@ -1,6 +1,7 @@
 package dev.mariany.martweaks.engagement;
 
 import dev.mariany.martweaks.attachment.ModAttachmentTypes;
+import dev.mariany.martweaks.compat.lootr.LootrConstants;
 import dev.mariany.martweaks.gamerule.ModGamerules;
 import dev.mariany.martweaks.util.ModUtils;
 import dev.mariany.martweaks.util.Pair;
@@ -15,6 +16,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stat;
 import net.minecraft.stat.StatType;
 import net.minecraft.stat.Stats;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -36,7 +38,7 @@ public class EngagementManager {
             Stats.CRAFTED, Crafting::handle);
 
     public static final Map<StatType<?>, QuadFunction<ServerPlayerEntity, Stat<?>, Integer, Integer, Boolean>> AFTER_STAT_INCREMENT_HANDLERS = Map.of(
-            Stats.USED, Building::handle, Stats.MINED, Mining::handle);
+            Stats.CUSTOM, Custom::handle, Stats.USED, Building::handle, Stats.MINED, Mining::handle);
 
     private static final int MIN_XP_REWARD = 2;
     private static final int MAX_XP_REWARD = 6;
@@ -157,6 +159,18 @@ public class EngagementManager {
     static class Crafting {
         static boolean handle(ServerPlayerEntity player, Stat<?> stat, int statCount, int engagementRate) {
             return engage(player, statCount <= 0);
+        }
+    }
+
+    static class Custom {
+        static boolean handle(ServerPlayerEntity player, Stat<?> stat, int statCount, int engagementRate) {
+            if (stat.getValue() instanceof Identifier id) {
+                if (id.equals(LootrConstants.LOOTED_STAT_ID)) {
+                    onDiscover(player);
+                }
+            }
+
+            return false;
         }
     }
 
