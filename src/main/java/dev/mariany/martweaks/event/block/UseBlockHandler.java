@@ -48,16 +48,21 @@ public class UseBlockHandler {
         }
 
         if (player instanceof ServerPlayerEntity serverPlayer) {
-            BlockEntity blockEntity = world.getBlockEntity(blockPos);
-            if (blockEntity instanceof LootableContainerBlockEntity lootableContainerBlockEntity) {
-                boolean opened = lootableContainerBlockEntity.getLootTable() == null;
-                if (!opened && lootableContainerBlockEntity.checkUnlocked(player)) {
-                    EngagementManager.onDiscover(serverPlayer);
-                }
+            if (isVanillaLootable(serverPlayer, world, blockPos)) {
+                EngagementManager.onDiscover(serverPlayer);
             }
         }
 
         return ActionResult.PASS;
+    }
+
+    public static boolean isVanillaLootable(ServerPlayerEntity player, World world, BlockPos blockPos) {
+        BlockEntity blockEntity = world.getBlockEntity(blockPos);
+        if (blockEntity instanceof LootableContainerBlockEntity lootableContainerBlockEntity) {
+            boolean opened = lootableContainerBlockEntity.getLootTable() == null;
+            return !opened && lootableContainerBlockEntity.checkUnlocked(player);
+        }
+        return false;
     }
 
     private static Pair<Item, Block> getHandlerKey(PlayerEntity player, ItemStack stack, BlockPos pos) {
