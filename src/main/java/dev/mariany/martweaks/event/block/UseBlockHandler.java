@@ -1,10 +1,13 @@
 package dev.mariany.martweaks.event.block;
 
+import dev.mariany.martweaks.engagement.EngagementManager;
 import dev.mariany.martweaks.util.ModUtils;
 import dev.mariany.martweaks.util.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -34,20 +38,30 @@ public class UseBlockHandler {
 
     public static ActionResult onUseBlock(PlayerEntity player, World world, Hand hand, BlockHitResult result) {
         ItemStack stack = player.getStackInHand(hand);
-        Pair<Item, Block> key = getHandlerKey(player, stack, result);
+        BlockPos blockPos = result.getBlockPos();
+
+        Pair<Item, Block> key = getHandlerKey(player, stack, blockPos);
 
         if (HANDLERS.containsKey(key)) {
             BiFunction<PlayerEntity, ItemStack, ActionResult> handler = HANDLERS.get(key);
             return handler.apply(player, stack);
         }
 
+        if (player instanceof ServerPlayerEntity serverPlayer) {
+            BlockEntity blockEntity = world.getBlockEntity(blockPos);
+            if (blockEntity instanceof LootableContainerBlockEntity lootableContainerBlockEntity) {
+                boolean opened = lootableContainerBlockEntity.getLootTable() == null;
+                if (!opened && lootableContainerBlockEntity.checkUnlocked(player)) {
+                    EngagementManager.onDiscover(serverPlayer);
+                }
+            }
+        }
+
         return ActionResult.PASS;
     }
 
-    private static Pair<Item, Block> getHandlerKey(PlayerEntity player, ItemStack stack, BlockHitResult result) {
-        BlockPos pos = result.getBlockPos();
+    private static Pair<Item, Block> getHandlerKey(PlayerEntity player, ItemStack stack, BlockPos pos) {
         BlockState blockState = player.getWorld().getBlockState(pos);
-
         return new Pair<>(stack.getItem(), blockState.getBlock());
     }
 

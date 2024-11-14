@@ -5,19 +5,26 @@ import dev.mariany.martweaks.gamerule.ModGamerules;
 import dev.mariany.martweaks.util.ModUtils;
 import dev.mariany.martweaks.util.Pair;
 import net.minecraft.block.Block;
+import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stat;
 import net.minecraft.stat.StatType;
 import net.minecraft.stat.Stats;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.minecraft.world.GameRules;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class EngagementManager {
     @FunctionalInterface
@@ -38,6 +45,17 @@ public class EngagementManager {
     public static void onDiscover(ServerPlayerEntity player) {
         rewardPlayer(player, DISCOVERY_MULTIPLIER);
         engage(player, true);
+    }
+
+    public static void onHarvest(ServerWorld world, BlockPos pos, Function<Integer, Integer> multiply) {
+        int baseXp = UniformIntProvider.create(0, 4).get(world.getRandom());
+        int xp = multiply.apply(baseXp);
+
+        if (xp > 0) {
+            if (world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS)) {
+                ExperienceOrbEntity.spawn(world, Vec3d.ofCenter(pos), xp);
+            }
+        }
     }
 
     public static void onStatIncrement(ServerPlayerEntity player, Stat<?> stat, boolean before) {

@@ -11,20 +11,16 @@ public class Pair<A, B> {
         this.right = right;
     }
 
+    public static <C, D> Pair<C, D> of(C left, D right) {
+        return new Pair<>(left, right);
+    }
+
     public A getLeft() {
         return this.left;
     }
 
-    public void setLeft(A left) {
-        this.left = left;
-    }
-
     public B getRight() {
         return this.right;
-    }
-
-    public void setRight(B right) {
-        this.right = right;
     }
 
     @Override

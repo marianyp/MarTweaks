@@ -5,6 +5,7 @@
   "mixins": [
     "AbstractBlockMixin",
     "BlockItemMixin",
+    "BlockMixin",
     "FenceBlockMixin",
     "GuardianEntityMixin",
     "LeadItemMixin",
@@ -18,6 +19,7 @@
     "StatTypeMixin",
     "accessor.AdvancementManagerAccesor",
     "accessor.AdvancementProgressAccessor",
+    "accessor.StemBlockAccessor",
     "accessor.TrackTargetGoalAccessor"
   ],
   "injectors": {

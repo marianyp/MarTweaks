@@ -8,6 +8,7 @@ import dev.mariany.martweaks.gamerule.ModGamerules;
 import dev.mariany.martweaks.item.ModItems;
 import dev.mariany.martweaks.packet.Packets;
 import dev.mariany.martweaks.packet.serverbound.ServerboundPackets;
+import dev.mariany.martweaks.util.GourdCache;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -28,6 +29,8 @@ public class MarTweaks implements ModInitializer {
         ModGamerules.registerModGamerules();
         ModBlocks.registerModBlocks();
         ModItems.registerModItems();
+
+        GourdCache.load();
 
         ServerTickEvents.START_SERVER_TICK.register(ServerTickHandler::onServerTick);
         UseBlockCallback.EVENT.register(UseBlockHandler::onUseBlock);
