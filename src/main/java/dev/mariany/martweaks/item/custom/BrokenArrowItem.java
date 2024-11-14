@@ -39,7 +39,7 @@ public class BrokenArrowItem extends Item {
                     player.setStackInHand(hand, repairedArrow);
 
                     ExperienceOrbEntity.spawn(serverWorld, pos.up().toBottomCenterPos(),
-                            MathHelper.nextBetween(random, 2, 5));
+                            MathHelper.nextBetween(random, 1, 3));
 
                     serverWorld.playSound(null, pos, SoundEvents.BLOCK_WOOD_PLACE, SoundCategory.NEUTRAL, 0.5F,
                             MathHelper.nextBetween(random, 0.1F, 0.3F));

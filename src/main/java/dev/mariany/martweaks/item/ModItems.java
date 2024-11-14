@@ -20,7 +20,7 @@ public class ModItems {
         MarTweaks.LOGGER.info("Registering Mod Items for " + MarTweaks.MOD_ID);
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register(entries -> {
-            entries.addAfter(Items.ARROW, BROKEN_ARROW);
+            entries.addBefore(Items.ARROW, BROKEN_ARROW);
         });
     }
 }
