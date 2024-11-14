@@ -25,24 +25,29 @@ public class EngagementManager {
         R apply(P1 one, P2 two, P3 three, P4 four);
     }
 
-    public static final Map<StatType<?>, QuadFunction<ServerPlayerEntity, Stat<?>, Integer, Integer, Boolean>> STAT_HANDLERS = Map.of(
-            Stats.USED, Building::handle, Stats.CRAFTED, Crafting::handle, Stats.MINED, Mining::handle);
+    public static final Map<StatType<?>, QuadFunction<ServerPlayerEntity, Stat<?>, Integer, Integer, Boolean>> BEFORE_STAT_INCREMENT_HANDLERS = Map.of(
+            Stats.CRAFTED, Crafting::handle);
+
+    public static final Map<StatType<?>, QuadFunction<ServerPlayerEntity, Stat<?>, Integer, Integer, Boolean>> AFTER_STAT_INCREMENT_HANDLERS = Map.of(
+            Stats.USED, Building::handle, Stats.MINED, Mining::handle);
 
     private static final int MIN_XP_REWARD = 2;
-    private static final int MAX_XP_REWARD = 8;
-    private static final float DISCOVERY_MULTIPLIER = 5F;
+    private static final int MAX_XP_REWARD = 6;
+    private static final float DISCOVERY_MULTIPLIER = 4F;
 
     public static void onDiscover(ServerPlayerEntity player) {
         rewardPlayer(player, DISCOVERY_MULTIPLIER);
         engage(player, true);
     }
 
-    public static void onStatIncrement(ServerPlayerEntity player, Stat<?> stat) {
+    public static void onStatIncrement(ServerPlayerEntity player, Stat<?> stat, boolean before) {
         StatType<?> type = stat.getType();
-        if (STAT_HANDLERS.containsKey(type)) {
+        Map<StatType<?>, QuadFunction<ServerPlayerEntity, Stat<?>, Integer, Integer, Boolean>> handlers = before ? BEFORE_STAT_INCREMENT_HANDLERS : AFTER_STAT_INCREMENT_HANDLERS;
+
+        if (handlers.containsKey(type)) {
             int engagementRate = getEngagementRate(player);
             int statCount = getStatCount(player, stat);
-            boolean engagementSatisfied = STAT_HANDLERS.get(type).apply(player, stat, statCount, engagementRate);
+            boolean engagementSatisfied = handlers.get(type).apply(player, stat, statCount, engagementRate);
 
             if (engagementSatisfied) {
                 rewardPlayer(player);
@@ -133,7 +138,7 @@ public class EngagementManager {
 
     static class Crafting {
         static boolean handle(ServerPlayerEntity player, Stat<?> stat, int statCount, int engagementRate) {
-            return engage(player, statCount == 1);
+            return engage(player, statCount <= 0);
         }
     }
 

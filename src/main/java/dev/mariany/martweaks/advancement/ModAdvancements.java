@@ -12,16 +12,12 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public class ModAdvancements {
     public static final Identifier DISCOVERED_ALL_BIOMES = MarTweaks.id("discovered_all_biomes");
     public static final Identifier DISCOVERED_ALL_STRUCTURES = MarTweaks.id("discovered_all_structures");
-
-    public static final List<Identifier> DISCOVERY_ADVANCEMENTS = List.of(DISCOVERED_ALL_BIOMES,
-            DISCOVERED_ALL_STRUCTURES);
 
     public static Advancement discoveredAllBiomes(RegistryWrapper.WrapperLookup lookup) {
         Map<String, AdvancementCriterion<?>> requirements = generateBiomesCriteria(lookup);

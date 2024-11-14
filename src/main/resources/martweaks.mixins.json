@@ -3,8 +3,8 @@
   "package": "dev.mariany.martweaks.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "BlockItemMixin",
     "AbstractBlockMixin",
+    "BlockItemMixin",
     "FenceBlockMixin",
     "GuardianEntityMixin",
     "LeadItemMixin",
@@ -17,6 +17,7 @@
     "StatHandlerMixin",
     "StatTypeMixin",
     "accessor.AdvancementManagerAccesor",
+    "accessor.AdvancementProgressAccessor",
     "accessor.TrackTargetGoalAccessor"
   ],
   "injectors": {

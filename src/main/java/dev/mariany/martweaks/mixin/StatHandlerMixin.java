@@ -12,10 +12,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(StatHandler.class)
 public class StatHandlerMixin {
-    @Inject(method = "increaseStat", at = @At(value = "TAIL"))
-    public void injectIncreaseStat(PlayerEntity player, Stat<?> stat, int value, CallbackInfo ci) {
+    @Inject(method = "increaseStat", at = @At(value = "HEAD"))
+    public void injectIncreaseStatBefore(PlayerEntity player, Stat<?> stat, int value, CallbackInfo ci) {
         if (player instanceof ServerPlayerEntity serverPlayer) {
-            EngagementManager.onStatIncrement(serverPlayer, stat);
+            EngagementManager.onStatIncrement(serverPlayer, stat, true);
+        }
+    }
+
+    @Inject(method = "increaseStat", at = @At(value = "TAIL"))
+    public void injectIncreaseStatAfter(PlayerEntity player, Stat<?> stat, int value, CallbackInfo ci) {
+        if (player instanceof ServerPlayerEntity serverPlayer) {
+            EngagementManager.onStatIncrement(serverPlayer, stat, false);
         }
     }
 }
