@@ -2,6 +2,7 @@ package dev.mariany.martweaks.block.custom;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.TallFlowerBlock;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.LivingEntity;
@@ -40,6 +41,11 @@ public class SunflowerBlock extends TallFlowerBlock {
         BlockPos blockPos = pos.up();
         world.setBlockState(blockPos, withWaterloggedState(world, blockPos, state.with(HALF, DoubleBlockHalf.UPPER)),
                 Block.NOTIFY_ALL);
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return Blocks.SUNFLOWER.getTranslationKey();
     }
 
     @Override
