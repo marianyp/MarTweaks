@@ -3,6 +3,7 @@
   "package": "dev.mariany.martweaks.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "PlayerAdvancementTrackerMixin",
     "BlockItemMixin",
     "FenceBlockMixin",
     "GuardianEntityMixin",
@@ -10,9 +11,11 @@
     "LivingEntityMixin",
     "MapStateMixin",
     "RevengeGoalMixin",
+    "ServerAdvancementLoaderMixin",
     "ServerPlayerEntityMixin",
     "StatHandlerMixin",
     "StatTypeMixin",
+    "accessor.AdvancementManagerAccesor",
     "accessor.TrackTargetGoalAccessor"
   ],
   "injectors": {

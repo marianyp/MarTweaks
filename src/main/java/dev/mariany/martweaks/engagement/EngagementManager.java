@@ -30,6 +30,12 @@ public class EngagementManager {
 
     private static final int MIN_XP_REWARD = 2;
     private static final int MAX_XP_REWARD = 8;
+    private static final float DISCOVERY_MULTIPLIER = 2.5F;
+
+    public static void onDiscover(ServerPlayerEntity player) {
+        rewardPlayer(player, DISCOVERY_MULTIPLIER);
+        engage(player, true);
+    }
 
     public static void onStatIncrement(ServerPlayerEntity player, Stat<?> stat) {
         StatType<?> type = stat.getType();
@@ -45,7 +51,12 @@ public class EngagementManager {
     }
 
     static void rewardPlayer(ServerPlayerEntity player) {
-        int xpReward = MathHelper.nextInt(player.getRandom(), MIN_XP_REWARD, MAX_XP_REWARD);
+        rewardPlayer(player, 1);
+    }
+
+    static void rewardPlayer(ServerPlayerEntity player, float multiplier) {
+        int xpReward = MathHelper.floor(
+                multiplier * MathHelper.nextInt(player.getRandom(), MIN_XP_REWARD, MAX_XP_REWARD));
         player.addExperience(xpReward);
         playGainExperienceSound(player);
     }
@@ -64,11 +75,12 @@ public class EngagementManager {
     }
 
     static void updateEngagementRate(ServerPlayerEntity player) {
-        int maxEngagementRate = player.getWorld().getGameRules().get(ModGamerules.MAX_ENGAGEMENT_RATE).get();
+        int maxEngagementRate = player.getWorld().getGameRules().get(ModGamerules.ENGAGEMENT_RATE).get();
+        int minEngagementRate = maxEngagementRate <= 0 ? 0 : maxEngagementRate / 2;
         int currentEngagementRate = getEngagementRate(player);
-        int newEngagementRate = MathHelper.nextInt(player.getRandom(), 0, maxEngagementRate);
+        int newEngagementRate = MathHelper.nextInt(player.getRandom(), minEngagementRate, maxEngagementRate);
 
-        if (currentEngagementRate <= 1) {
+        if (currentEngagementRate <= minEngagementRate + 1) {
             newEngagementRate = maxEngagementRate;
         }
 

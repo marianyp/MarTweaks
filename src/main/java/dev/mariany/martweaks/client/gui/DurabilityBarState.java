@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 public class DurabilityBarState {
     private static final DurabilityBarState INSTANCE = new DurabilityBarState();
 
-    private static final int WARN_DURABILITY = 12;
+    private static final int WARN_DURABILITY = 16;
     private static final int BLACK = Colors.BLACK;
     private static final int RED = Colors.RED;
     private static final int YELLOW = Colors.YELLOW;

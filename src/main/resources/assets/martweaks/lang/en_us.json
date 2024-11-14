@@ -5,7 +5,7 @@
   "gamerule.elderSearchRadius.description": "Controls the radius searched for alive/dead Elder Guardians.",
   "gamerule.strictEngagement": "Strict Engagement",
   "gamerule.strictEngagement.description": "Tracks blocks/items that a player has gained experience from to prevent cheesing/farming experience.",
-  "gamerule.maxEngagementRate": "Max Engagement Rate",
-  "gamerule.maxEngagementRate.description": "Determines the max possible engagements until a player receives their next experience reward for mining, building, etc.",
+  "gamerule.engagementRate": "Engagement Rate",
+  "gamerule.engagementRate.description": "Generalized rate for how often a player receives an experience reward for mining or building.",
   "item.martweaks.broken_arrow": "Broken Arrow"
 }
