@@ -2,15 +2,17 @@ package dev.mariany.martweaks.block.custom;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.TallFlowerBlock;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -45,7 +47,14 @@ public class SunflowerBlock extends TallFlowerBlock {
 
     @Override
     public String getTranslationKey() {
-        return Blocks.SUNFLOWER.getTranslationKey();
+        Identifier id = Registries.BLOCK.getId(this);
+        Identifier vanillaId = Identifier.ofVanilla(id.getPath());
+
+        if (Registries.BLOCK.containsId(vanillaId)) {
+            id = vanillaId;
+        }
+
+        return Util.createTranslationKey("block", id);
     }
 
     @Override
