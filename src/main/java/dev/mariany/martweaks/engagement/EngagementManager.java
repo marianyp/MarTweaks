@@ -87,10 +87,10 @@ public class EngagementManager {
         player.setAttached(ModAttachmentTypes.ENGAGEMENT_RATE, newEngagementRate);
     }
 
-    static boolean canEngage(ServerPlayerEntity player, Item item) {
+    static boolean canEngage(ServerPlayerEntity player, Item item, EngagementCache cacheType) {
         boolean strict = player.getWorld().getGameRules().get(ModGamerules.STRICT_ENGAGEMENT).get();
         if (strict) {
-            List<Item> cache = EngagementCache.getMiningCache(player);
+            List<Item> cache = EngagementCache.getCache(player, cacheType);
             return !cache.contains(item);
         }
         return true;
@@ -123,7 +123,7 @@ public class EngagementManager {
     static class Building {
         static boolean handle(ServerPlayerEntity player, Stat<?> stat, int statCount, int engagementRate) {
             if (stat.getValue() instanceof BlockItem blockItem) {
-                if (canEngage(player, blockItem)) {
+                if (canEngage(player, blockItem, EngagementCache.BUILDING)) {
                     return engage(player, every(engagementRate, statCount), cache(EngagementCache.BUILDING, blockItem));
                 }
             }
@@ -141,7 +141,7 @@ public class EngagementManager {
         static boolean handle(ServerPlayerEntity player, Stat<?> stat, int statCount, int engagementRate) {
             if (stat.getValue() instanceof Block block) {
                 Item item = block.asItem();
-                if (canEngage(player, item)) {
+                if (canEngage(player, item, EngagementCache.MINING)) {
                     return engage(player, every(engagementRate, statCount), cache(EngagementCache.MINING, item));
                 }
             }

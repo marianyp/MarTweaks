@@ -36,14 +36,6 @@ public enum EngagementCache {
         player.setAttached(getAttachmentType(cacheType), unparseCache(cache));
     }
 
-    public static List<Item> getBuildingCache(ServerPlayerEntity player) {
-        return getCache(player, BUILDING);
-    }
-
-    public static List<Item> getMiningCache(ServerPlayerEntity player) {
-        return getCache(player, MINING);
-    }
-
     public static List<Item> getCache(ServerPlayerEntity player, EngagementCache cache) {
         return parseCache(player.getAttachedOrCreate(getAttachmentType(cache)));
     }
