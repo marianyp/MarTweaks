@@ -60,7 +60,8 @@ public class UseBlockHandler {
         BlockEntity blockEntity = world.getBlockEntity(blockPos);
         if (blockEntity instanceof LootableContainerBlockEntity lootableContainerBlockEntity) {
             boolean opened = lootableContainerBlockEntity.getLootTable() == null;
-            return !opened && lootableContainerBlockEntity.checkUnlocked(player);
+            boolean empty = lootableContainerBlockEntity.isEmpty();
+            return !empty && !opened && lootableContainerBlockEntity.checkUnlocked(player);
         }
         return false;
     }
