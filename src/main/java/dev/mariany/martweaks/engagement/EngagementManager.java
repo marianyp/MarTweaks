@@ -30,7 +30,7 @@ public class EngagementManager {
 
     private static final int MIN_XP_REWARD = 2;
     private static final int MAX_XP_REWARD = 8;
-    private static final float DISCOVERY_MULTIPLIER = 2.5F;
+    private static final float DISCOVERY_MULTIPLIER = 5F;
 
     public static void onDiscover(ServerPlayerEntity player) {
         rewardPlayer(player, DISCOVERY_MULTIPLIER);
