@@ -2,12 +2,15 @@ package dev.mariany.martweaks.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import dev.mariany.martweaks.entity.LavaAwareEntity;
 import dev.mariany.martweaks.entity.boss.guardian.ElderGuardianFight;
 import net.minecraft.entity.Leashable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.ElderGuardianEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -31,5 +34,27 @@ public class LivingEntityMixin {
             ElderGuardianFight.onElderDeath(elder);
         }
         original.call(instance, adversary);
+    }
+
+    @WrapOperation(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isTouchingWater()Z"))
+    public boolean interceptIsTouchingWater(LivingEntity instance, Operation<Boolean> original) {
+        boolean touching = original.call(instance);
+
+        if (!touching) {
+            if (instance instanceof PlayerEntity player) {
+                return ((LavaAwareEntity) player).marTweaks$isTouchingLava();
+            }
+        }
+
+        return touching;
+    }
+
+    @WrapOperation(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isInLava()Z"))
+    public boolean interceptIsInLava(LivingEntity entity, Operation<Boolean> original) {
+        if (entity.hasStatusEffect(StatusEffects.FIRE_RESISTANCE)) {
+            return false;
+        }
+
+        return original.call(entity);
     }
 }

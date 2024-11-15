@@ -61,6 +61,11 @@ public class ConnectedLeashKnotEntity extends LeashKnotEntity implements Leashab
     }
 
     @Override
+    public boolean beforeLeashTick(Entity leashHolder, float distance) {
+        return !(leashHolder instanceof LeashKnotEntity);
+    }
+
+    @Override
     public void applyLeashElasticity(Entity leashHolder, float distance) {
     }
 

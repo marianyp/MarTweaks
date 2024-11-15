@@ -6,6 +6,7 @@
     "AbstractBlockMixin",
     "BlockItemMixin",
     "BlockMixin",
+    "EntityMixin",
     "FenceBlockMixin",
     "GuardianEntityMixin",
     "LeadItemMixin",
@@ -26,6 +27,8 @@
     "defaultRequire": 1
   },
   "client": [
+    "CameraMixin",
+    "ClientPlayerEntityMixin",
     "DrawContextMixin",
     "MapRendererMixin",
     "MinecraftClientMixin"
