@@ -1,5 +1,6 @@
 package dev.mariany.martweaks.entity.boss.guardian;
 
+import dev.mariany.martweaks.MarTweaks;
 import dev.mariany.martweaks.attachment.ModAttachmentTypes;
 import dev.mariany.martweaks.gamerule.ModGamerules;
 import dev.mariany.martweaks.loot.ModLootTables;
@@ -28,38 +29,42 @@ import java.util.UUID;
 
 public class ElderGuardianFight {
     public static void onElderDeath(ElderGuardianEntity elder) {
-        if (elder.getWorld() instanceof ServerWorld world) {
-            List<ElderGuardianEntity> neighbouringElders = getNeighbouringElders(elder);
+        if (MarTweaks.CONFIG.oceanMonumentRewards.enabled()) {
+            if (elder.getWorld() instanceof ServerWorld world) {
+                List<ElderGuardianEntity> neighbouringElders = getNeighbouringElders(elder);
 
-            if (neighbouringElders.isEmpty()) {
-                LootTable lootTable = world.getServer().getReloadableRegistries()
-                        .getLootTable(ModLootTables.ELDER_GUARDIAN_REWARD);
-                List<Entity> participants = getParticipants(elder);
+                if (neighbouringElders.isEmpty()) {
+                    LootTable lootTable = world.getServer().getReloadableRegistries()
+                            .getLootTable(ModLootTables.ELDER_GUARDIAN_REWARD);
+                    List<Entity> participants = getParticipants(elder);
 
-                for (Entity participant : participants) {
-                    LootContextParameterSet.Builder builder = new LootContextParameterSet.Builder(world).add(
-                                    LootContextParameters.ORIGIN, participant.getPos())
-                            .add(LootContextParameters.THIS_ENTITY, participant);
+                    for (Entity participant : participants) {
+                        LootContextParameterSet.Builder builder = new LootContextParameterSet.Builder(world).add(
+                                        LootContextParameters.ORIGIN, participant.getPos())
+                                .add(LootContextParameters.THIS_ENTITY, participant);
 
-                    LootContextParameterSet lootContextParameterSet = builder.build(LootContextTypes.GIFT);
-                    lootTable.generateLoot(lootContextParameterSet, elder.getLootTableSeed(),
-                            stack -> dropLoot(stack, participant));
-                    createRewardEffect(participant);
+                        LootContextParameterSet lootContextParameterSet = builder.build(LootContextTypes.GIFT);
+                        lootTable.generateLoot(lootContextParameterSet, elder.getLootTableSeed(),
+                                stack -> dropLoot(stack, participant));
+                        createRewardEffect(participant);
+                    }
+
+                    world.playSound(null, elder.getBlockPos(), SoundEvents.GOAT_HORN_SOUNDS.get(2).value(),
+                            SoundCategory.AMBIENT, 1F, 0.5F);
                 }
-
-                world.playSound(null, elder.getBlockPos(), SoundEvents.GOAT_HORN_SOUNDS.get(2).value(),
-                        SoundCategory.AMBIENT, 1F, 0.5F);
             }
         }
     }
 
     public static void onElderDamaged(ElderGuardianEntity elder, DamageSource source) {
-        Entity attacker = source.getAttacker();
-        if (attacker instanceof PlayerEntity) {
-            List<ElderGuardianEntity> neighbouringElders = getNeighbouringElders(elder);
-            List<UUID> participants = addParticipant(elder, attacker);
+        if (MarTweaks.CONFIG.oceanMonumentRewards.enabled()) {
+            Entity attacker = source.getAttacker();
+            if (attacker instanceof PlayerEntity) {
+                List<ElderGuardianEntity> neighbouringElders = getNeighbouringElders(elder);
+                List<UUID> participants = addParticipant(elder, attacker);
 
-            updateNeighbouringElders(neighbouringElders, participants);
+                updateNeighbouringElders(neighbouringElders, participants);
+            }
         }
     }
 

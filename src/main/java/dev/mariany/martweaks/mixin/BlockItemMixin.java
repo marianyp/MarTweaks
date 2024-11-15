@@ -2,6 +2,7 @@ package dev.mariany.martweaks.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import dev.mariany.martweaks.MarTweaks;
 import dev.mariany.martweaks.block.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -19,7 +20,7 @@ public class BlockItemMixin {
         BlockItem blockItem = (BlockItem) (Object) this;
         Block block = blockItem.getBlock();
 
-        if (block.equals(Blocks.SUNFLOWER)) {
+        if (MarTweaks.CONFIG.directionalSunflowers.enabled() && block.equals(Blocks.SUNFLOWER)) {
             return ModBlocks.SUNFLOWER.getPlacementState(ctx);
         }
 

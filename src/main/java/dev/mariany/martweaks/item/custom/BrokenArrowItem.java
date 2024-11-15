@@ -1,5 +1,6 @@
 package dev.mariany.martweaks.item.custom;
 
+import dev.mariany.martweaks.MarTweaks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FletchingTableBlock;
@@ -38,8 +39,10 @@ public class BrokenArrowItem extends Item {
                     ItemStack repairedArrow = repair(fletchingTable, stack, player);
                     player.setStackInHand(hand, repairedArrow);
 
-                    ExperienceOrbEntity.spawn(serverWorld, pos.up().toBottomCenterPos(),
-                            MathHelper.nextBetween(random, 1, 3));
+                    if (MarTweaks.CONFIG.arrowRecovery.rewardRepairingBrokenArrow()) {
+                        ExperienceOrbEntity.spawn(serverWorld, pos.up().toBottomCenterPos(),
+                                MathHelper.nextBetween(random, 1, 3));
+                    }
 
                     serverWorld.playSound(null, pos, SoundEvents.BLOCK_WOOD_PLACE, SoundCategory.NEUTRAL, 0.5F,
                             MathHelper.nextBetween(random, 0.1F, 0.3F));

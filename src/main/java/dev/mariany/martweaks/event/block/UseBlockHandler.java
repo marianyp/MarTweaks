@@ -1,5 +1,6 @@
 package dev.mariany.martweaks.event.block;
 
+import dev.mariany.martweaks.MarTweaks;
 import dev.mariany.martweaks.engagement.EngagementManager;
 import dev.mariany.martweaks.util.ModUtils;
 import dev.mariany.martweaks.util.Pair;
@@ -48,8 +49,10 @@ public class UseBlockHandler {
         }
 
         if (player instanceof ServerPlayerEntity serverPlayer) {
-            if (isVanillaLootable(serverPlayer, world, blockPos)) {
-                EngagementManager.onDiscover(serverPlayer);
+            if (MarTweaks.CONFIG.engagementRewards.engagements.discovery.rewardDiscoveringLoot()) {
+                if (isVanillaLootable(serverPlayer, world, blockPos)) {
+                    EngagementManager.onDiscover(serverPlayer);
+                }
             }
         }
 
@@ -72,38 +75,43 @@ public class UseBlockHandler {
     }
 
     private static ActionResult recover(PlayerEntity player, ItemStack stack) {
-        if (player.getWorld() instanceof ServerWorld world) {
-            MinecraftServer server = world.getServer();
-            Optional<GlobalPos> optionalLastDeathPos = player.getLastDeathPos();
+        if (MarTweaks.CONFIG.recoveryCompass.enabled()) {
+            if (player.getWorld() instanceof ServerWorld world) {
+                MinecraftServer server = world.getServer();
+                Optional<GlobalPos> optionalLastDeathPos = player.getLastDeathPos();
 
-            if (optionalLastDeathPos.isPresent()) {
-                GlobalPos lastDeathPos = optionalLastDeathPos.get();
-                BlockPos lastDeathBlockPos = lastDeathPos.pos();
+                if (optionalLastDeathPos.isPresent()) {
+                    GlobalPos lastDeathPos = optionalLastDeathPos.get();
+                    BlockPos lastDeathBlockPos = lastDeathPos.pos();
 
-                RegistryKey<World> dimensionKey = lastDeathPos.dimension();
-                ServerWorld lastDeathWorld = server.getWorld(dimensionKey);
+                    RegistryKey<World> dimensionKey = lastDeathPos.dimension();
+                    ServerWorld lastDeathWorld = server.getWorld(dimensionKey);
 
-                if (lastDeathWorld != null) {
-                    int minY = lastDeathWorld.getDimension().minY();
+                    if (lastDeathWorld != null) {
+                        int minY = lastDeathWorld.getDimension().minY();
 
-                    if (lastDeathBlockPos.getY() <= minY) {
-                        lastDeathBlockPos = new BlockPos(lastDeathBlockPos.getX(), minY + 1, lastDeathBlockPos.getZ());
+                        if (lastDeathBlockPos.getY() <= minY) {
+                            lastDeathBlockPos = new BlockPos(lastDeathBlockPos.getX(), minY + 1,
+                                    lastDeathBlockPos.getZ());
+                        }
+
+                        player.teleportTo(
+                                new TeleportTarget(lastDeathWorld, lastDeathBlockPos.toBottomCenterPos(), Vec3d.ZERO,
+                                        player.getYaw(), player.getPitch(), TeleportTarget.NO_OP));
+
+                        playTeleportSound(player);
+
+                        EquipmentSlot slot = ItemStack.areEqual(stack,
+                                player.getStackInHand(Hand.MAIN_HAND)) ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
+
+                        stack.damage(1, player, slot);
+
+                        if (MarTweaks.CONFIG.recoveryCompass.protectLastDeathLocation()) {
+                            createPlatform(lastDeathWorld, lastDeathBlockPos, player);
+                        }
+
+                        return ActionResult.SUCCESS;
                     }
-
-                    player.teleportTo(
-                            new TeleportTarget(lastDeathWorld, lastDeathBlockPos.toBottomCenterPos(), Vec3d.ZERO,
-                                    player.getYaw(), player.getPitch(), TeleportTarget.NO_OP));
-
-                    playTeleportSound(player);
-
-                    EquipmentSlot slot = ItemStack.areEqual(stack,
-                            player.getStackInHand(Hand.MAIN_HAND)) ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
-
-                    stack.damage(1, player, slot);
-
-                    createPlatform(lastDeathWorld, lastDeathBlockPos, player);
-
-                    return ActionResult.SUCCESS;
                 }
             }
         }

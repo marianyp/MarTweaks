@@ -2,6 +2,7 @@ package dev.mariany.martweaks.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import dev.mariany.martweaks.MarTweaks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
@@ -22,6 +23,11 @@ public class MapRendererMixin {
     @WrapOperation(method = "draw", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/map/MapState;getDecorations()Ljava/lang/Iterable;"))
     Iterable<MapDecoration> draw(MapState instance, Operation<Iterable<MapDecoration>> original) {
         Iterable<MapDecoration> iterable = original.call(instance);
+
+        if (!MarTweaks.CONFIG.convenientMaps.enabled()) {
+            return iterable;
+        }
+
         MinecraftClient client = MinecraftClient.getInstance();
         ClientPlayerEntity player = client.player;
 

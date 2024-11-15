@@ -2,6 +2,7 @@ package dev.mariany.martweaks.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import dev.mariany.martweaks.MarTweaks;
 import dev.mariany.martweaks.advancement.ModAdvancements;
 import dev.mariany.martweaks.engagement.EngagementManager;
 import dev.mariany.martweaks.mixin.accessor.AdvancementProgressAccessor;
@@ -29,6 +30,14 @@ public class PlayerAdvancementTrackerMixin {
         Identifier id = advancement.id();
         boolean biome = obtained > 1 && ModAdvancements.DISCOVERED_ALL_BIOMES.equals(id);
         boolean structure = ModAdvancements.DISCOVERED_ALL_STRUCTURES.equals(id);
+
+        if (!MarTweaks.CONFIG.engagementRewards.engagements.discovery.rewardDiscoveringBiomes()) {
+            biome = false;
+        }
+
+        if (!MarTweaks.CONFIG.engagementRewards.engagements.discovery.rewardDiscoveringStructures()) {
+            structure = false;
+        }
 
         if (biome || structure) {
             EngagementManager.onDiscover(owner);

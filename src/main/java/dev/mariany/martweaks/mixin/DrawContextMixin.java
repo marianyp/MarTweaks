@@ -1,5 +1,6 @@
 package dev.mariany.martweaks.mixin;
 
+import dev.mariany.martweaks.client.MarTweaksClient;
 import dev.mariany.martweaks.client.gui.DurabilityBarState;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -15,11 +16,13 @@ public class DrawContextMixin {
     @Inject(method = "drawItemInSlot(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", at = @At(value = "TAIL"))
     private void injectDrawItemBarColorChange(TextRenderer textRenderer, ItemStack stack, int x, int y,
                                               String countOverride, CallbackInfo ci) {
-        DrawContext context = (DrawContext) (Object) this;
-        MatrixStack matrices = context.getMatrices();
+        if (MarTweaksClient.CONFIG.durabilityWarning.enabled()) {
+            DrawContext context = (DrawContext) (Object) this;
+            MatrixStack matrices = context.getMatrices();
 
-        matrices.push();
-        DurabilityBarState.getInstance().draw(context, stack, x, y);
-        matrices.pop();
+            matrices.push();
+            DurabilityBarState.getInstance().draw(context, stack, x, y);
+            matrices.pop();
+        }
     }
 }

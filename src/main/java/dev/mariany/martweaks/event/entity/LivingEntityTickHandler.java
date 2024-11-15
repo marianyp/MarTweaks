@@ -1,5 +1,6 @@
 package dev.mariany.martweaks.event.entity;
 
+import dev.mariany.martweaks.MarTweaks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
@@ -25,6 +26,12 @@ public class LivingEntityTickHandler {
     }
 
     private static void onMobTick(MobEntity mob) {
+        if (MarTweaks.CONFIG.leads.noLeadBreaking()) {
+            preventLeadBreak(mob);
+        }
+    }
+
+    private static void preventLeadBreak(MobEntity mob) {
         ServerWorld serverWorld = (ServerWorld) mob.getWorld();
         Entity holder = mob.getLeashHolder();
 

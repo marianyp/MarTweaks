@@ -1,5 +1,6 @@
 package dev.mariany.martweaks.client.gui;
 
+import dev.mariany.martweaks.client.MarTweaksClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
@@ -11,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 public class DurabilityBarState {
     private static final DurabilityBarState INSTANCE = new DurabilityBarState();
 
-    private static final int WARN_DURABILITY = 24;
     private static final int BLACK = Colors.BLACK;
     private static final int RED = Colors.RED;
     private static final int YELLOW = Colors.YELLOW;
@@ -30,15 +30,19 @@ public class DurabilityBarState {
     }
 
     private boolean shouldWarn(ItemStack stack) {
+        int warnDurability = MarTweaksClient.CONFIG.durabilityWarning.warnThreshold();
         int maxDamage = stack.getMaxDamage();
         int damage = stack.getDamage();
         int warnThreshold = MathHelper.floor((float) maxDamage / 2);
+
         if (warnThreshold <= 1) {
             return false;
         }
-        if (warnThreshold > WARN_DURABILITY) {
-            warnThreshold = WARN_DURABILITY;
+
+        if (warnThreshold > warnDurability) {
+            warnThreshold = warnDurability;
         }
+
         return maxDamage - damage <= warnThreshold;
     }
 

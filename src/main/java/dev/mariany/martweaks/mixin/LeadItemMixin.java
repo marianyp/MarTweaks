@@ -1,5 +1,6 @@
 package dev.mariany.martweaks.mixin;
 
+import dev.mariany.martweaks.MarTweaks;
 import dev.mariany.martweaks.entity.decoration.ConnectedLeashKnotEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,16 +20,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class LeadItemMixin {
     @Inject(method = "useOnBlock", at = @At(value = "HEAD"), cancellable = true)
     public void injectUseOnBlock(ItemUsageContext context, CallbackInfoReturnable<ActionResult> cir) {
-        PlayerEntity player = context.getPlayer();
-        if (player != null) {
-            World world = context.getWorld();
-            BlockPos pos = context.getBlockPos();
-            ItemStack stack = context.getStack();
-            BlockState blockState = world.getBlockState(pos);
-            if (blockState.isIn(BlockTags.FENCES)) {
-                if (ConnectedLeashKnotEntity.place(player, pos)) {
-                    stack.decrement(1);
-                    cir.setReturnValue(ActionResult.success(world.isClient));
+        if (MarTweaks.CONFIG.leads.leadFences()) {
+            PlayerEntity player = context.getPlayer();
+            if (player != null) {
+                World world = context.getWorld();
+                BlockPos pos = context.getBlockPos();
+                ItemStack stack = context.getStack();
+                BlockState blockState = world.getBlockState(pos);
+                if (blockState.isIn(BlockTags.FENCES)) {
+                    if (ConnectedLeashKnotEntity.place(player, pos)) {
+                        stack.decrement(1);
+                        cir.setReturnValue(ActionResult.success(world.isClient));
+                    }
                 }
             }
         }
