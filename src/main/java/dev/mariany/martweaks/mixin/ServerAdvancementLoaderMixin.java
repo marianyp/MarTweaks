@@ -2,6 +2,7 @@ package dev.mariany.martweaks.mixin;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
+import dev.mariany.martweaks.MarTweaks;
 import dev.mariany.martweaks.advancement.ModAdvancements;
 import dev.mariany.martweaks.mixin.accessor.AdvancementManagerAccesor;
 import net.minecraft.advancement.AdvancementEntry;
@@ -18,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,13 +37,19 @@ public class ServerAdvancementLoaderMixin {
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At(value = "TAIL"))
     protected void apply(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler,
                          CallbackInfo ci) {
-        AdvancementEntry biomesEntry = new AdvancementEntry(ModAdvancements.DISCOVERED_ALL_BIOMES,
-                ModAdvancements.discoveredAllBiomes(registryLookup));
+        List<AdvancementEntry> entries = new ArrayList<>();
 
-        AdvancementEntry structuresEntry = new AdvancementEntry(ModAdvancements.DISCOVERED_ALL_STRUCTURES,
-                ModAdvancements.discoveredAllStructures(registryLookup));
+        if (MarTweaks.CONFIG.engagementRewards.engagements.discovery.rewardDiscoveringBiomes()) {
+            AdvancementEntry biomesEntry = new AdvancementEntry(ModAdvancements.DISCOVERED_ALL_BIOMES,
+                    ModAdvancements.discoveredAllBiomes(registryLookup));
+            entries.add(biomesEntry);
+        }
 
-        List<AdvancementEntry> entries = List.of(biomesEntry, structuresEntry);
+        if (MarTweaks.CONFIG.engagementRewards.engagements.discovery.rewardDiscoveringStructures()) {
+            AdvancementEntry structuresEntry = new AdvancementEntry(ModAdvancements.DISCOVERED_ALL_STRUCTURES,
+                    ModAdvancements.discoveredAllStructures(registryLookup));
+            entries.add(structuresEntry);
+        }
 
         Map<Identifier, AdvancementEntry> advancementsCopy = new HashMap<>(advancements);
 
