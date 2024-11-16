@@ -91,7 +91,7 @@ public final class QuickMoveUtil {
     private static void addToExistingSlot(Inventory inventory, ItemStack stack) {
         for (int i = 0; i < inventory.size(); i++) {
             ItemStack itemStack = inventory.getStack(i);
-            if (ItemStack.areItemsAndComponentsEqual(itemStack, stack)) {
+            if (ItemStack.areItemsAndComponentsEqual(itemStack, stack) && inventory.isValid(i, stack)) {
                 transfer(inventory, stack, itemStack);
                 if (stack.isEmpty()) {
                     return;
@@ -103,7 +103,7 @@ public final class QuickMoveUtil {
     private static void addToNewSlot(Inventory inventory, ItemStack stack) {
         for (int i = 0; i < inventory.size(); i++) {
             ItemStack itemStack = inventory.getStack(i);
-            if (itemStack.isEmpty()) {
+            if (itemStack.isEmpty() && inventory.isValid(i, stack)) {
                 inventory.setStack(i, stack.copyAndEmpty());
                 return;
             }

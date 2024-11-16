@@ -1,6 +1,5 @@
 package dev.mariany.martweaks.packet.clientbound;
 
-import dev.mariany.martweaks.MarTweaks;
 import dev.mariany.martweaks.client.MarTweaksClient;
 import dev.mariany.martweaks.client.quickmove.QuickMoveState;
 import dev.mariany.martweaks.packet.serverbound.QuickMoveTicketPayload;
@@ -30,9 +29,6 @@ public class ClientBoundPackets {
                 BlockPos pos = quickMoveState.getPos();
                 boolean useKnownItems = quickMoveState.useKnownItems();
                 boolean shouldIncludeHotbar = quickMoveState.shouldIncludeHotbar();
-
-                MarTweaks.LOGGER.info("pos: {} | useKnownItems: {} | shouldIncludeHotbar: {}", pos, useKnownItems,
-                        shouldIncludeHotbar);
 
                 if (pos != null) {
                     QuickMoveTicketPayload ticket = new QuickMoveTicketPayload(pos, useKnownItems, shouldIncludeHotbar);
