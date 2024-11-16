@@ -23,10 +23,9 @@ public class RevengeGoalMixin {
 
             if (mob instanceof HostileEntity && mob.getAttacker() instanceof HostileEntity attacker) {
                 boolean disabled = behavior.equals(MarTweaksConfigModel.InFighting.Behavior.DISABLED);
-                boolean diff = behavior.equals(MarTweaksConfigModel.InFighting.Behavior.DIFFERING_MOB_TYPES);
-
-                boolean mobsDiffer = !attacker.getType().equals(mob.getType());
-                boolean prevent = disabled || (diff && mobsDiffer);
+                boolean differ = behavior.equals(MarTweaksConfigModel.InFighting.Behavior.DIFFERING_MOB_TYPES);
+                boolean sameType = attacker.getType().equals(mob.getType());
+                boolean prevent = disabled || (differ && sameType);
 
                 if (prevent) {
                     cir.setReturnValue(false);
