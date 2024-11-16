@@ -1,10 +1,10 @@
 package dev.mariany.martweaks.mixin;
 
+import dev.mariany.martweaks.util.ModUtils;
 import net.minecraft.block.enums.CameraSubmersionType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.Camera;
-import net.minecraft.entity.effect.StatusEffects;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,8 +19,7 @@ public class CameraMixin {
         CameraSubmersionType type = cir.getReturnValue();
 
         if (player != null) {
-            boolean fireResistant = player.hasStatusEffect(StatusEffects.FIRE_RESISTANCE);
-            if (fireResistant && type.equals(CameraSubmersionType.LAVA)) {
+            if (ModUtils.canLavaSwim(player) && type.equals(CameraSubmersionType.LAVA)) {
                 cir.setReturnValue(CameraSubmersionType.NONE);
             }
         }

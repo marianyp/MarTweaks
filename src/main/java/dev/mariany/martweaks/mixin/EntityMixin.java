@@ -2,7 +2,9 @@ package dev.mariany.martweaks.mixin;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import dev.mariany.martweaks.MarTweaks;
 import dev.mariany.martweaks.entity.LavaAwareEntity;
+import dev.mariany.martweaks.util.ModUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffects;
@@ -31,12 +33,12 @@ public class EntityMixin implements LavaAwareEntity {
 
     @Override
     public boolean marTweaks$isTouchingLava() {
-        return touchingLava;
+        return touchingLava && MarTweaks.CONFIG.lavaSwimming.enabled();
     }
 
     @Override
     public boolean marTweaks$isSubmergedInLava() {
-        return submergedInLava;
+        return submergedInLava && MarTweaks.CONFIG.lavaSwimming.enabled();
     }
 
     @WrapOperation(method = "updateSwimming", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setSwimming(Z)V"))
@@ -49,14 +51,14 @@ public class EntityMixin implements LavaAwareEntity {
                 BlockPos pos = player.getBlockPos();
                 FluidState fluidState = world.getFluidState(pos);
 
-                boolean isFireResistant = player.hasStatusEffect(StatusEffects.FIRE_RESISTANCE);
+                boolean canLavaSwim = ModUtils.canLavaSwim(player);
                 boolean isLava = fluidState.isIn(FluidTags.LAVA);
                 boolean isSprinting = player.isSprinting();
                 boolean noVehicle = !player.hasVehicle();
                 boolean notFlying = !player.getAbilities().flying;
                 boolean wasSwimming = player.isSwimming();
 
-                if (isFireResistant && notFlying && isSprinting && noVehicle) {
+                if (canLavaSwim && notFlying && isSprinting && noVehicle) {
                     if (wasSwimming) {
                         swimming = touchingLava;
                     } else {

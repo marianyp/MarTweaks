@@ -4,11 +4,11 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.mariany.martweaks.entity.LavaAwareEntity;
 import dev.mariany.martweaks.entity.boss.guardian.ElderGuardianFight;
+import dev.mariany.martweaks.util.ModUtils;
 import net.minecraft.entity.Leashable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.ElderGuardianEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -51,7 +51,7 @@ public class LivingEntityMixin {
 
     @WrapOperation(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isInLava()Z"))
     public boolean interceptIsInLava(LivingEntity entity, Operation<Boolean> original) {
-        if (entity.hasStatusEffect(StatusEffects.FIRE_RESISTANCE)) {
+        if (ModUtils.canLavaSwim(entity)) {
             return false;
         }
 

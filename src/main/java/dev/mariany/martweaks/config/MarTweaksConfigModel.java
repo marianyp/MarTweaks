@@ -11,7 +11,7 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 @Config(name = MarTweaks.MOD_ID + "-common", wrapperName = "MarTweaksConfig")
-@Sync(value= Option.SyncMode.OVERRIDE_CLIENT)
+@Sync(value = Option.SyncMode.OVERRIDE_CLIENT)
 public final class MarTweaksConfigModel {
     private static final String CUSTOM_ENGAGEMENTS_COMMENT = "List of custom stat types that, when incremented, players are rewarded for.";
     private static final String LOOTR_LOOTED_STAT = "lootr:looted_stat";
@@ -31,6 +31,9 @@ public final class MarTweaksConfigModel {
 
     @Nest
     public InFighting inFighting = new InFighting();
+
+    @Nest
+    public LavaSwimming lavaSwimming = new LavaSwimming();
 
     @Nest
     public Leads leads = new Leads();
@@ -122,6 +125,11 @@ public final class MarTweaksConfigModel {
         public enum Behavior {
             ENABLED, DISABLED, DIFFERING_MOB_TYPES;
         }
+    }
+
+    public static final class LavaSwimming {
+        @Comment("Allows players to swim in lava while they have fire resistance.")
+        public boolean enabled = true;
     }
 
     public static final class Leads {
