@@ -20,6 +20,7 @@
     "StatTypeMixin",
     "accessor.AdvancementManagerAccesor",
     "accessor.AdvancementProgressAccessor",
+    "accessor.ServerPlayerInteractionManagerAccesor",
     "accessor.StemBlockAccessor",
     "accessor.TrackTargetGoalAccessor"
   ],

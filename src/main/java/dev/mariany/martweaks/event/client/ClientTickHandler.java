@@ -1,16 +1,14 @@
 package dev.mariany.martweaks.event.client;
 
 import dev.mariany.martweaks.client.MarTweaksClient;
-import dev.mariany.martweaks.client.gui.DurabilityBarState;
 import net.minecraft.client.MinecraftClient;
 
 public class ClientTickHandler {
-    public static void onClientTick(MinecraftClient client) {
-        if (client.isPaused()) {
-            return;
+    public static void onEnd(MinecraftClient client) {
+        if (!client.isPaused()) {
+            MarTweaksClient.DURABILITY_BAR_STATE.update();
         }
-        if (MarTweaksClient.CONFIG.durabilityWarning.enabled()) {
-            DurabilityBarState.getInstance().update();
-        }
+
+        MarTweaksClient.QUICK_MOVE_STATE.update();
     }
 }

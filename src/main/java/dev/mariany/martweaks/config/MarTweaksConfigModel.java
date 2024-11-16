@@ -42,10 +42,6 @@ public final class MarTweaksConfigModel {
     public OceanMonumentRewards oceanMonumentRewards = new OceanMonumentRewards();
 
     @Nest
-    @Sync(value = Option.SyncMode.INFORM_SERVER)
-    public QuickMove quickMove = new QuickMove();
-
-    @Nest
     public RecoveryCompass recoveryCompass = new RecoveryCompass();
 
     @Nest
@@ -142,18 +138,6 @@ public final class MarTweaksConfigModel {
 
         @Comment("When enabled, allows for leads to be used on fences for decoration.")
         public boolean leadFences = true;
-    }
-
-    public static final class QuickMove {
-        @Comment("MATCH = Only move items that exist in the target container, ALL = Move all items into the target container, DISABLED = Disable Quick Move functionality")
-        public Behavior behavior = Behavior.MATCH;
-
-        @Comment("Determines if the player's hotbar should be included when performing a quick move")
-        public boolean includeHotbar = false;
-
-        public enum Behavior {
-            MATCH, ALL, DISABLED;
-        }
     }
 
     public static final class OceanMonumentRewards {

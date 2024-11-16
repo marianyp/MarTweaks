@@ -1,6 +1,8 @@
 package dev.mariany.martweaks.client.gui;
 
 import dev.mariany.martweaks.client.MarTweaksClient;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
@@ -9,9 +11,8 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
+@Environment(EnvType.CLIENT)
 public class DurabilityBarState {
-    private static final DurabilityBarState INSTANCE = new DurabilityBarState();
-
     private static final int BLACK = Colors.BLACK;
     private static final int RED = Colors.RED;
     private static final int YELLOW = Colors.YELLOW;
@@ -19,10 +20,6 @@ public class DurabilityBarState {
 
     private final FilledState warningState = new FilledState(300);
     private final FilledState dangerState = new FilledState(175);
-
-    public static DurabilityBarState getInstance() {
-        return INSTANCE;
-    }
 
     public void update() {
         warningState.update();

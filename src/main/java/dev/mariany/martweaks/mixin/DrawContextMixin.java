@@ -1,7 +1,6 @@
 package dev.mariany.martweaks.mixin;
 
 import dev.mariany.martweaks.client.MarTweaksClient;
-import dev.mariany.martweaks.client.gui.DurabilityBarState;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
@@ -21,7 +20,7 @@ public class DrawContextMixin {
             MatrixStack matrices = context.getMatrices();
 
             matrices.push();
-            DurabilityBarState.getInstance().draw(context, stack, x, y);
+            MarTweaksClient.DURABILITY_BAR_STATE.draw(context, stack, x, y);
             matrices.pop();
         }
     }

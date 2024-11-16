@@ -16,6 +16,9 @@ public final class MarTweaksClientConfigModel {
     @Comment("Rather the XP reward sound should play for things like discovering biomes, crafting new items, etc.")
     public boolean enableEngagementXpRewardSounds = true;
 
+    @Comment("Allows players to quick move items from their inventory to storage blocks by shift + right clicking with an empty hand.")
+    public boolean enableQuickMove = true;
+
     public static final class DurabilityWarning {
         @Comment("When enabled, will make the durability bar flash yellow when an item is close to breaking and will flash red when there's only 1 use left.")
         public boolean enabled = true;
