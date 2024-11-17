@@ -16,6 +16,7 @@ public final class MarTweaksClientConfigModel {
     @Nest
     public DurabilityWarning durabilityWarning = new DurabilityWarning();
 
+    @Nest
     public QuickMove quickMove = new QuickMove();
 
     public static final class DurabilityWarning {

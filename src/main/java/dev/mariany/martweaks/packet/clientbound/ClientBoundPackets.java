@@ -28,8 +28,8 @@ public class ClientBoundPackets {
             PlayerEntity player = context.player();
             ItemStack stack = player.getMainHandStack();
 
-            if (MarTweaksClient.CONFIG.quickMove().enabled) {
-                if (!MarTweaksClient.CONFIG.quickMove().requireEmptyHand || stack.isEmpty()) {
+            if (MarTweaksClient.CONFIG.quickMove.enabled()) {
+                if (!MarTweaksClient.CONFIG.quickMove.requireEmptyHand() || stack.isEmpty()) {
                     QuickMoveState quickMoveState = MarTweaksClient.QUICK_MOVE_STATE.next(payload.pos());
 
                     BlockPos pos = quickMoveState.getPos();
