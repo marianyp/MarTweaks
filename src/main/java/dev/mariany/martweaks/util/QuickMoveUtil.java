@@ -11,7 +11,11 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 
+import java.util.List;
+
 public final class QuickMoveUtil {
+    private static final List<Integer> ARMOR_SLOTS = List.of(36, 37, 38, 39);
+
     public static void quickMove(ServerPlayerEntity player, BlockPos blockPos, boolean useKnownItems,
                                  boolean includeHotbar) {
         ServerWorld world = player.getServerWorld();
@@ -34,7 +38,7 @@ public final class QuickMoveUtil {
         for (int sourceSlot = 0; sourceSlot < source.size(); sourceSlot++) {
             ItemStack sourceStack = source.getStack(sourceSlot);
 
-            if (!includeHotbar && isHotbarIndex(source, sourceSlot)) {
+            if (!isValidSlot(source, sourceSlot, includeHotbar)) {
                 continue;
             }
 
@@ -54,12 +58,22 @@ public final class QuickMoveUtil {
         return moved;
     }
 
-    private static boolean isHotbarIndex(Inventory inventory, int index) {
+    private static boolean isValidSlot(Inventory inventory, int index, boolean includeHotbar) {
         if (inventory instanceof PlayerInventory) {
-            return PlayerInventory.isValidHotbarIndex(index);
+            if (!includeHotbar && isHotbarSlot(index)) {
+                return false;
+            }
+            return !isArmorSlot(index);
         }
+        return true;
+    }
 
-        return false;
+    private static boolean isHotbarSlot(int index) {
+        return index == PlayerInventory.OFF_HAND_SLOT || PlayerInventory.isValidHotbarIndex(index);
+    }
+
+    private static boolean isArmorSlot(int index) {
+        return ARMOR_SLOTS.contains(index);
     }
 
     private static boolean moveItemsBetweenInventories(Inventory source, Inventory target, int sourceSlot) {

@@ -19,7 +19,7 @@ public class AttackBlockHandler {
 
     public static ActionResult handleStorageDeposit(PlayerEntity player, BlockPos blockPos) {
         if (player instanceof ServerPlayerEntity serverPlayer) {
-            if (serverPlayer.isSneaking() && serverPlayer.getMainHandStack().isEmpty()) {
+            if (serverPlayer.isSneaking()) {
                 ServerPlayerInteractionManagerAccesor interactionManager = (ServerPlayerInteractionManagerAccesor) serverPlayer.interactionManager;
                 int breakProgress = interactionManager.martweaks$blockBreakingProgress();
 

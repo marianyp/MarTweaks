@@ -7,6 +7,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.sound.SoundManager;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -23,16 +25,22 @@ public class ClientBoundPackets {
 
         // Quick Move Requested
         ClientPlayNetworking.registerGlobalReceiver(RequestQuickMovePayload.ID, (payload, context) -> {
-            if (MarTweaksClient.CONFIG.enableQuickMove()) {
-                QuickMoveState quickMoveState = MarTweaksClient.QUICK_MOVE_STATE.next(payload.pos());
+            PlayerEntity player = context.player();
+            ItemStack stack = player.getMainHandStack();
 
-                BlockPos pos = quickMoveState.getPos();
-                boolean useKnownItems = quickMoveState.useKnownItems();
-                boolean shouldIncludeHotbar = quickMoveState.shouldIncludeHotbar();
+            if (MarTweaksClient.CONFIG.quickMove().enabled) {
+                if (!MarTweaksClient.CONFIG.quickMove().requireEmptyHand || stack.isEmpty()) {
+                    QuickMoveState quickMoveState = MarTweaksClient.QUICK_MOVE_STATE.next(payload.pos());
 
-                if (pos != null) {
-                    QuickMoveTicketPayload ticket = new QuickMoveTicketPayload(pos, useKnownItems, shouldIncludeHotbar);
-                    context.responseSender().sendPacket(ticket);
+                    BlockPos pos = quickMoveState.getPos();
+                    boolean useKnownItems = quickMoveState.useKnownItems();
+                    boolean shouldIncludeHotbar = quickMoveState.shouldIncludeHotbar();
+
+                    if (pos != null) {
+                        QuickMoveTicketPayload ticket = new QuickMoveTicketPayload(pos, useKnownItems,
+                                shouldIncludeHotbar);
+                        context.responseSender().sendPacket(ticket);
+                    }
                 }
             }
         });
