@@ -10,7 +10,7 @@ public class QuickMoveState {
     private static final boolean DEFAULT_USE_KNOWN_ITEMS = true;
     private static final boolean DEFAULT_SHOULD_INCLUDE_HOTBAR = false;
 
-    private static final int DEFAULT_RESET_IN_TICKS = 10;
+    private static final int DEFAULT_RESET_IN_TICKS = 8;
 
     @Nullable
     private BlockPos pos = null;

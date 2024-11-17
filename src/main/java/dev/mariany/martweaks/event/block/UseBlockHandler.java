@@ -43,7 +43,7 @@ public class UseBlockHandler {
 
         Pair<Item, Block> key = getHandlerKey(player, stack, blockPos);
 
-        if (HANDLERS.containsKey(key)) {
+        if (HANDLERS.containsKey(key) && !player.isSpectator()) {
             BiFunction<PlayerEntity, ItemStack, ActionResult> handler = HANDLERS.get(key);
             return handler.apply(player, stack);
         }

@@ -4,6 +4,7 @@ import dev.mariany.martweaks.block.ModBlocks;
 import dev.mariany.martweaks.config.MarTweaksConfig;
 import dev.mariany.martweaks.event.block.AttackBlockHandler;
 import dev.mariany.martweaks.event.block.UseBlockHandler;
+import dev.mariany.martweaks.event.entity.UseEntityHandler;
 import dev.mariany.martweaks.event.item.ModifyItemComponentsHandler;
 import dev.mariany.martweaks.event.server.ServerTickHandler;
 import dev.mariany.martweaks.gamerule.ModGamerules;
@@ -15,6 +16,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -38,6 +40,7 @@ public class MarTweaks implements ModInitializer {
 
         ServerTickEvents.START_SERVER_TICK.register(ServerTickHandler::onServerTick);
         UseBlockCallback.EVENT.register(UseBlockHandler::onUseBlock);
+        UseEntityCallback.EVENT.register(UseEntityHandler::onUseEntity);
         DefaultItemComponentEvents.MODIFY.register(ModifyItemComponentsHandler::modify);
         AttackBlockCallback.EVENT.register(AttackBlockHandler::onAttack);
     }
