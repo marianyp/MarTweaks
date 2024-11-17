@@ -2,6 +2,7 @@ package dev.mariany.martweaks.task;
 
 import dev.mariany.martweaks.MarTweaks;
 import dev.mariany.martweaks.block.DoorFlaggable;
+import dev.mariany.martweaks.gamerule.ModGamerules;
 import dev.mariany.martweaks.mixin.accessor.FenceGateBlockAccesor;
 import dev.mariany.martweaks.mixin.accessor.TrapdoorBlockAccesor;
 import net.minecraft.block.*;
@@ -30,11 +31,16 @@ public class CloseDoorTask {
         ((DoorFlaggable) serverWorld).marTweaks$flagDoorPos(pos);
     }
 
-    public static void create(ServerWorld world, BlockPos pos, int closeInTicks) {
-        create(world, pos, closeInTicks, true, true, true);
+    public static void create(ServerWorld world, BlockPos pos) {
+        int closeInTicks = world.getGameRules().get(ModGamerules.AUTO_CLOSE_IN_TICKS).get();
+        boolean handleDoors = world.getGameRules().get(ModGamerules.AUTO_CLOSE_DOORS).get();
+        boolean handleTrapdoors = world.getGameRules().get(ModGamerules.AUTO_CLOSE_TRAPDOORS).get();
+        boolean handleFenceGates = world.getGameRules().get(ModGamerules.AUTO_CLOSE_FENCE_GATES).get();
+
+        create(world, pos, closeInTicks, handleDoors, handleTrapdoors, handleFenceGates);
     }
 
-    public static void create(ServerWorld world, BlockPos pos, int closeInTicks, boolean handleDoors,
+    private static void create(ServerWorld world, BlockPos pos, int closeInTicks, boolean handleDoors,
                               boolean handleTrapdoors, boolean handleFenceGates) {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();

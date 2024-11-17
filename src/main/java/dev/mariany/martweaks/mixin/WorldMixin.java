@@ -37,7 +37,7 @@ public class WorldMixin implements DoorFlaggable {
                     boolean flagged = flaggedDoorPositions.stream().anyMatch(flaggedPos -> flaggedPos.equals(pos));
 
                     if (!flagged && !state.isAir()) {
-                        CloseDoorTask.create(serverWorld, pos, 30);
+                        CloseDoorTask.create(serverWorld, pos);
                     } else {
                         flaggedDoorPositions.remove(pos);
                     }

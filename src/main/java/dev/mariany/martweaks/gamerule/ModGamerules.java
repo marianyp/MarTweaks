@@ -15,6 +15,15 @@ public class ModGamerules {
     public static final GameRules.Key<GameRules.IntRule> ENGAGEMENT_RATE = GameRuleRegistry.register("engagementRate",
             GameRules.Category.MISC, GameRuleFactory.createIntRule(ModConstants.DEFAULT_ENGAGEMENT_RATE, 0));
 
+    public static final GameRules.Key<GameRules.IntRule> AUTO_CLOSE_IN_TICKS = GameRuleRegistry.register(
+            "autoCloseInTicks", GameRules.Category.MISC, GameRuleFactory.createIntRule(30, 1));
+    public static final GameRules.Key<GameRules.BooleanRule> AUTO_CLOSE_DOORS = GameRuleRegistry.register(
+            "autoCloseDoors", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(true));
+    public static final GameRules.Key<GameRules.BooleanRule> AUTO_CLOSE_TRAPDOORS = GameRuleRegistry.register(
+            "autoCloseTrapdoors", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(true));
+    public static final GameRules.Key<GameRules.BooleanRule> AUTO_CLOSE_FENCE_GATES = GameRuleRegistry.register(
+            "autoCloseFenceGates", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(true));
+
     public static void registerModGamerules() {
         MarTweaks.LOGGER.info("Registering Mod Gamerules for " + MarTweaks.MOD_ID);
     }
