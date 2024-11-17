@@ -8,8 +8,10 @@ import dev.mariany.martweaks.util.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.DoorBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
+import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
@@ -53,14 +55,20 @@ public class UseBlockHandler {
             return ActionResult.PASS;
         }
 
-        handleDoors(world, blockPos);
+        handleDoors(player, blockPos);
 
         return ActionResult.PASS;
     }
 
-    private static void handleDoors(World world, BlockPos blockPos) {
-        if (world instanceof ServerWorld serverWorld) {
-            CloseDoorTask.create(serverWorld, blockPos, 30);
+    private static void handleDoors(PlayerEntity player, BlockPos pos) {
+        if (player.getWorld() instanceof ServerWorld serverWorld) {
+            if (player.isSneaking()) {
+                BlockState state = serverWorld.getBlockState(pos);
+                if (state.contains(DoorBlock.HALF) && state.get(DoorBlock.HALF).equals(DoubleBlockHalf.UPPER)) {
+                    pos = pos.down();
+                }
+                CloseDoorTask.flag(serverWorld, pos);
+            }
         }
     }
 

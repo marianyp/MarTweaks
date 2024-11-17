@@ -18,6 +18,7 @@
     "ServerPlayerEntityMixin",
     "StatHandlerMixin",
     "StatTypeMixin",
+    "WorldMixin",
     "accessor.AdvancementManagerAccesor",
     "accessor.AdvancementProgressAccessor",
     "accessor.FenceGateBlockAccesor",

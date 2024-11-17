@@ -1,6 +1,7 @@
 package dev.mariany.martweaks.task;
 
 import dev.mariany.martweaks.MarTweaks;
+import dev.mariany.martweaks.block.DoorFlaggable;
 import dev.mariany.martweaks.mixin.accessor.FenceGateBlockAccesor;
 import dev.mariany.martweaks.mixin.accessor.TrapdoorBlockAccesor;
 import net.minecraft.block.*;
@@ -25,6 +26,10 @@ public class CloseDoorTask {
         this.block = block;
     }
 
+    public static void flag(ServerWorld serverWorld, BlockPos pos) {
+        ((DoorFlaggable) serverWorld).marTweaks$flagDoorPos(pos);
+    }
+
     public static void create(ServerWorld world, BlockPos pos, int closeInTicks) {
         create(world, pos, closeInTicks, true, true, true);
     }
@@ -40,9 +45,13 @@ public class CloseDoorTask {
         }
     }
 
-    private static boolean isValidState(BlockState blockState, boolean handleDoors, boolean handleTrapdoors,
-                                        boolean handleFenceGates) {
+    public static boolean isValidState(BlockState blockState, boolean handleDoors, boolean handleTrapdoors,
+                                       boolean handleFenceGates) {
         Block block = blockState.getBlock();
+
+        if (!blockState.contains(OPEN) || !blockState.get(OPEN)) {
+            return false;
+        }
 
         if (handleDoors && block instanceof DoorBlock) {
             return true;
