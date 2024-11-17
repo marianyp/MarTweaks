@@ -2,6 +2,7 @@ package dev.mariany.martweaks.event.block;
 
 import dev.mariany.martweaks.MarTweaks;
 import dev.mariany.martweaks.engagement.EngagementManager;
+import dev.mariany.martweaks.task.CloseDoorTask;
 import dev.mariany.martweaks.util.ModUtils;
 import dev.mariany.martweaks.util.Pair;
 import net.minecraft.block.Block;
@@ -48,18 +49,35 @@ public class UseBlockHandler {
             return handler.apply(player, stack);
         }
 
-        if (player instanceof ServerPlayerEntity serverPlayer) {
-            if (MarTweaks.CONFIG.engagementRewards.engagements.discovery.rewardDiscoveringLoot()) {
-                if (isVanillaLootable(serverPlayer, world, blockPos)) {
-                    EngagementManager.onDiscover(serverPlayer);
-                }
-            }
+        if (handleLootDiscovery(player, blockPos)) {
+            return ActionResult.PASS;
         }
+
+        handleDoors(world, blockPos);
 
         return ActionResult.PASS;
     }
 
-    public static boolean isVanillaLootable(ServerPlayerEntity player, World world, BlockPos blockPos) {
+    private static void handleDoors(World world, BlockPos blockPos) {
+        if (world instanceof ServerWorld serverWorld) {
+            CloseDoorTask.create(serverWorld, blockPos, 30);
+        }
+    }
+
+    private static boolean handleLootDiscovery(PlayerEntity player, BlockPos blockPos) {
+        if (player instanceof ServerPlayerEntity serverPlayer) {
+            if (MarTweaks.CONFIG.engagementRewards.engagements.discovery.rewardDiscoveringLoot()) {
+                if (isVanillaLootable(serverPlayer, serverPlayer.getServerWorld(), blockPos)) {
+                    EngagementManager.onDiscover(serverPlayer);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean isVanillaLootable(ServerPlayerEntity player, World world, BlockPos blockPos) {
         BlockEntity blockEntity = world.getBlockEntity(blockPos);
         if (blockEntity instanceof LootableContainerBlockEntity lootableContainerBlockEntity) {
             boolean opened = lootableContainerBlockEntity.getLootTable() == null;

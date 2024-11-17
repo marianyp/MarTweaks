@@ -20,9 +20,11 @@
     "StatTypeMixin",
     "accessor.AdvancementManagerAccesor",
     "accessor.AdvancementProgressAccessor",
+    "accessor.FenceGateBlockAccesor",
     "accessor.ServerPlayerInteractionManagerAccesor",
     "accessor.StemBlockAccessor",
-    "accessor.TrackTargetGoalAccessor"
+    "accessor.TrackTargetGoalAccessor",
+    "accessor.TrapdoorBlockAccesor"
   ],
   "injectors": {
     "defaultRequire": 1
