@@ -6,11 +6,9 @@ import net.minecraft.util.TypeFilter;
 
 public class ItemFrameTickHandler {
     public static void onServerWorldTick(ServerWorld world) {
-        if (world.getTime() % 10 == 0) {
-            for (ItemFrameEntity itemFrame : world.getEntitiesByType(TypeFilter.instanceOf(ItemFrameEntity.class),
-                    entity -> !entity.isRemoved())) {
-                onItemFrameTick(itemFrame);
-            }
+        for (ItemFrameEntity itemFrame : world.getEntitiesByType(TypeFilter.instanceOf(ItemFrameEntity.class),
+                entity -> !entity.isRemoved())) {
+            onItemFrameTick(itemFrame);
         }
     }
 
