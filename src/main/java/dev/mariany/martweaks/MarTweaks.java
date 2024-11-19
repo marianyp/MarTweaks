@@ -13,6 +13,7 @@ import dev.mariany.martweaks.packet.Packets;
 import dev.mariany.martweaks.packet.serverbound.ServerBoundPackets;
 import dev.mariany.martweaks.util.GourdCache;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -20,6 +21,7 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.item.v1.DefaultItemComponentEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +36,8 @@ public class MarTweaks implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static final MarTweaksConfig CONFIG = MarTweaksConfig.createAndLoad();
 
-    private static final Collection<AbstractMap.SimpleEntry<Runnable, Integer>> workQueue = new ConcurrentLinkedQueue<>();
+    @Nullable
+    private static Collection<AbstractMap.SimpleEntry<Runnable, Integer>> workQueue = null;
 
     @Override
     public void onInitialize() {
@@ -49,6 +52,7 @@ public class MarTweaks implements ModInitializer {
 
         ServerTickEvents.START_SERVER_TICK.register(ServerTickHandler::onServerTick);
         ServerTickEvents.END_SERVER_TICK.register(MarTweaks::handleWorkQueue);
+        ServerLifecycleEvents.SERVER_STARTED.register(MarTweaks::handleServerStarted);
         UseBlockCallback.EVENT.register(UseBlockHandler::onUseBlock);
         UseEntityCallback.EVENT.register(UseEntityHandler::onUseEntity);
         DefaultItemComponentEvents.MODIFY.register(ModifyItemComponentsHandler::modify);
@@ -56,18 +60,27 @@ public class MarTweaks implements ModInitializer {
     }
 
     public static void queueServerWork(int tick, Runnable action) {
-        workQueue.add(new AbstractMap.SimpleEntry<>(action, tick));
+        if (workQueue != null) {
+            workQueue.add(new AbstractMap.SimpleEntry<>(action, tick));
+        }
     }
 
     private static void handleWorkQueue(MinecraftServer minecraftServer) {
-        List<AbstractMap.SimpleEntry<Runnable, Integer>> actions = new ArrayList<>();
-        workQueue.forEach(work -> {
-            work.setValue(work.getValue() - 1);
-            if (work.getValue() == 0)
-                actions.add(work);
-        });
-        actions.forEach(e -> e.getKey().run());
-        workQueue.removeAll(actions);
+        if (workQueue != null) {
+            List<AbstractMap.SimpleEntry<Runnable, Integer>> actions = new ArrayList<>();
+            workQueue.forEach(work -> {
+                work.setValue(work.getValue() - 1);
+                if (work.getValue() == 0) {
+                    actions.add(work);
+                }
+            });
+            actions.forEach(e -> e.getKey().run());
+            workQueue.removeAll(actions);
+        }
+    }
+
+    private static void handleServerStarted(MinecraftServer minecraftServer) {
+        workQueue = new ConcurrentLinkedQueue<>();
     }
 
     public static Identifier id(String resource) {

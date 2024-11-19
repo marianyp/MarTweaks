@@ -16,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Mixin(World.class)
@@ -31,7 +30,7 @@ public class WorldMixin implements DoorFlaggable {
         World world = (World) (Object) this;
 
         if (cir.getReturnValue()) {
-            if (world instanceof ServerWorld serverWorld && serverWorld.isPosLoaded(pos.getX(), pos.getZ())) {
+            if (world instanceof ServerWorld serverWorld) {
                 if (!state.contains(DoorBlock.HALF) || state.get(DoorBlock.HALF).equals(DoubleBlockHalf.LOWER)) {
                     Set<BlockPos> flaggedDoorPositions = marTweaks$getFlags();
                     boolean flagged = flaggedDoorPositions.stream().anyMatch(flaggedPos -> flaggedPos.equals(pos));
@@ -55,6 +54,6 @@ public class WorldMixin implements DoorFlaggable {
 
     @Override
     public Set<BlockPos> marTweaks$getFlags() {
-        return Objects.requireNonNullElseGet(this.flaggedDoorPositions, Set::of);
+        return this.flaggedDoorPositions;
     }
 }
