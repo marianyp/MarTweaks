@@ -26,6 +26,7 @@ public class UseEntityHandler {
                 if (!itemFrameEntity.getHeldItemStack().isEmpty()) {
                     boolean isInvisible = itemFrameEntity.isInvisible();
                     itemFrameEntity.setInvisible(!isInvisible);
+                    itemFrameEntity.playSound(itemFrameEntity.getRotateItemSound(), 1F, 1F);
                     return ActionResult.SUCCESS;
                 }
             }
