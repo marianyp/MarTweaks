@@ -112,7 +112,7 @@ public final class MarTweaksConfigModel {
                 @Comment("Determines if players should receive XP when they loot chests.")
                 public boolean rewardDiscoveringLoot = true;
 
-                @Comment(CUSTOM_ENGAGEMENTS_COMMENT + "(Default: [" + LOOTR_LOOTED_STAT + "])")
+                @Comment(CUSTOM_ENGAGEMENTS_COMMENT + " (Default: [\"" + LOOTR_LOOTED_STAT + "\"])")
                 public List<String> customDiscoveryTypes = List.of(LOOTR_LOOTED_STAT);
             }
         }
