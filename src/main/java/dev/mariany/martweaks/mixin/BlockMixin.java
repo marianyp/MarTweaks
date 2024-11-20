@@ -4,7 +4,6 @@ import dev.mariany.martweaks.engagement.EngagementManager;
 import dev.mariany.martweaks.util.GourdCache;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.CropBlock;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -22,7 +21,7 @@ public class BlockMixin {
     public void injectOnBroken(World world, BlockPos pos, BlockState state, PlayerEntity player,
                                CallbackInfoReturnable<BlockState> cir) {
         if (world instanceof ServerWorld serverWorld) {
-            if (!(state.getBlock() instanceof CropBlock) && GourdCache.isGourd(serverWorld, pos, state)) {
+            if (GourdCache.isGourd(serverWorld, pos, state)) {
                 ItemStack tool = player.getMainHandStack();
                 boolean correctTool = tool.getItem().isCorrectForDrops(tool, state);
                 EngagementManager.onHarvest(serverWorld, pos,

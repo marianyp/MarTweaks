@@ -4,12 +4,15 @@ import dev.mariany.martweaks.MarTweaks;
 import dev.mariany.martweaks.attachment.ModAttachmentTypes;
 import dev.mariany.martweaks.gamerule.ModGamerules;
 import dev.mariany.martweaks.packet.clientbound.EngagedPayload;
+import dev.mariany.martweaks.util.ModUtils;
 import dev.mariany.martweaks.util.Pair;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
+import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stat;
@@ -21,6 +24,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.world.GameRules;
+import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.List;
 import java.util.Map;
@@ -34,10 +38,10 @@ public class EngagementManager {
         R apply(P1 one, P2 two, P3 three, P4 four);
     }
 
-    public static final Map<StatType<?>, QuadFunction<ServerPlayerEntity, Stat<?>, Integer, Integer, Boolean>> BEFORE_STAT_INCREMENT_HANDLERS = Map.of(
+    public static final Map<StatType<?>, TriFunction<ServerPlayerEntity, Stat<?>, Integer, Boolean>> BEFORE_STAT_INCREMENT_HANDLERS = Map.of(
             Stats.CRAFTED, Crafting::handle);
 
-    public static final Map<StatType<?>, QuadFunction<ServerPlayerEntity, Stat<?>, Integer, Integer, Boolean>> AFTER_STAT_INCREMENT_HANDLERS = Map.of(
+    public static final Map<StatType<?>, TriFunction<ServerPlayerEntity, Stat<?>, Integer, Boolean>> AFTER_STAT_INCREMENT_HANDLERS = Map.of(
             Stats.CUSTOM, Custom::handle, Stats.USED, Building::handle, Stats.MINED, Mining::handle);
 
     public static void onDiscover(ServerPlayerEntity player) {
@@ -59,13 +63,16 @@ public class EngagementManager {
     }
 
     public static void onStatIncrement(ServerPlayerEntity player, Stat<?> stat, boolean before) {
+        if (stat.getValue() instanceof ItemConvertible itemConvertible && itemConvertible.asItem().equals(Items.AIR)) {
+            return;
+        }
+
         StatType<?> type = stat.getType();
-        Map<StatType<?>, QuadFunction<ServerPlayerEntity, Stat<?>, Integer, Integer, Boolean>> handlers = before ? BEFORE_STAT_INCREMENT_HANDLERS : AFTER_STAT_INCREMENT_HANDLERS;
+        Map<StatType<?>, TriFunction<ServerPlayerEntity, Stat<?>, Integer, Boolean>> handlers = before ? BEFORE_STAT_INCREMENT_HANDLERS : AFTER_STAT_INCREMENT_HANDLERS;
 
         if (handlers.containsKey(type)) {
-            int engagementRate = getEngagementRate(player);
             int statCount = getStatCount(player, stat);
-            boolean engagementSatisfied = handlers.get(type).apply(player, stat, statCount, engagementRate);
+            boolean engagementSatisfied = handlers.get(type).apply(player, stat, statCount);
 
             if (engagementSatisfied) {
                 rewardPlayer(player);
@@ -89,30 +96,39 @@ public class EngagementManager {
         return player.getStatHandler().getStat(stat);
     }
 
-    static int getEngagementRate(ServerPlayerEntity player) {
-        return player.getAttachedOrCreate(ModAttachmentTypes.ENGAGEMENT_RATE);
+    static int getRemainingEngagement(ServerPlayerEntity player) {
+        return player.getAttachedOrCreate(ModAttachmentTypes.REMAINING_ENGAGEMENT);
     }
 
-    static void updateEngagementRate(ServerPlayerEntity player) {
-        int maxEngagementRate = player.getWorld().getGameRules().get(ModGamerules.ENGAGEMENT_RATE).get();
-        int minEngagementRate = maxEngagementRate <= 0 ? 0 : maxEngagementRate / 2;
-        int currentEngagementRate = getEngagementRate(player);
-        int newEngagementRate = MathHelper.nextInt(player.getRandom(), minEngagementRate, maxEngagementRate);
+    static void updateRemainingEngagement(ServerPlayerEntity player) {
+        int remainingEngagement = getRemainingEngagement(player) - 1;
 
-        if (currentEngagementRate <= minEngagementRate + 1) {
-            newEngagementRate = maxEngagementRate;
+        if (remainingEngagement < 0) {
+            int max = player.getWorld().getGameRules().get(ModGamerules.ENGAGEMENT_RATE).get();
+            int min = Math.max(0, max <= 0 ? 0 : (max / 2) - 1);
+            remainingEngagement = MathHelper.nextInt(player.getRandom(), min, max);
         }
 
-        player.setAttached(ModAttachmentTypes.ENGAGEMENT_RATE, newEngagementRate);
+        player.setAttached(ModAttachmentTypes.REMAINING_ENGAGEMENT, remainingEngagement);
     }
 
     static boolean canEngage(ServerPlayerEntity player, Item item, EngagementCache cacheType) {
         boolean strict = player.getWorld().getGameRules().get(ModGamerules.STRICT_ENGAGEMENT).get();
+
+        if (getRemainingEngagement(player) > 0) {
+            return false;
+        }
+
         if (strict) {
             List<Item> cache = EngagementCache.getCache(player, cacheType);
             return !cache.contains(item);
         }
+
         return true;
+    }
+
+    static boolean engage(ServerPlayerEntity player, Optional<Pair<EngagementCache, Item>> optionalCache) {
+        return engage(player, true, optionalCache);
     }
 
     static boolean engage(ServerPlayerEntity player, boolean criteria) {
@@ -126,7 +142,7 @@ public class EngagementManager {
                 Pair<EngagementCache, Item> cache = optionalCache.get();
                 EngagementCache.addToCache(player, cache.getLeft(), cache.getRight());
             }
-            updateEngagementRate(player);
+            updateRemainingEngagement(player);
         }
         return criteria;
     }
@@ -135,18 +151,14 @@ public class EngagementManager {
         return Optional.of(new Pair<>(cache, item));
     }
 
-    static boolean every(int nth, int value) {
-        return value == 0 || nth == 0 || value % nth == 0;
-    }
-
     static class Building {
-        static boolean handle(ServerPlayerEntity player, Stat<?> stat, int statCount, int engagementRate) {
+        static boolean handle(ServerPlayerEntity player, Stat<?> stat, int statCount) {
             if (MarTweaks.CONFIG.engagementRewards.engagements.rewardBuilding()) {
                 if (stat.getValue() instanceof BlockItem blockItem) {
                     if (canEngage(player, blockItem, EngagementCache.BUILDING)) {
-                        return engage(player, every(engagementRate, statCount),
-                                cache(EngagementCache.BUILDING, blockItem));
+                        return engage(player, cache(EngagementCache.BUILDING, blockItem));
                     }
+                    updateRemainingEngagement(player);
                 }
             }
             return false;
@@ -154,7 +166,7 @@ public class EngagementManager {
     }
 
     static class Crafting {
-        static boolean handle(ServerPlayerEntity player, Stat<?> stat, int statCount, int engagementRate) {
+        static boolean handle(ServerPlayerEntity player, Stat<?> stat, int statCount) {
             if (MarTweaks.CONFIG.engagementRewards.engagements.rewardCrafting()) {
                 return engage(player, statCount <= 0);
             }
@@ -163,7 +175,7 @@ public class EngagementManager {
     }
 
     static class Custom {
-        static boolean handle(ServerPlayerEntity player, Stat<?> stat, int statCount, int engagementRate) {
+        static boolean handle(ServerPlayerEntity player, Stat<?> stat, int statCount) {
             List<Identifier> stats = parseStatIds(MarTweaks.CONFIG.engagementRewards.engagements.customEngagements());
 
             List<Identifier> discoveryStats = parseStatIds(
@@ -185,13 +197,21 @@ public class EngagementManager {
     }
 
     static class Mining {
-        static boolean handle(ServerPlayerEntity player, Stat<?> stat, int statCount, int engagementRate) {
-            if (MarTweaks.CONFIG.engagementRewards.engagements.rewardMining()) {
+        static boolean handle(ServerPlayerEntity player, Stat<?> stat, int statCount) {
+            boolean rewardMining = MarTweaks.CONFIG.engagementRewards.engagements.rewardMining();
+            if (rewardMining) {
                 if (stat.getValue() instanceof Block block) {
+                    boolean rewardHarvestingCrops = MarTweaks.CONFIG.engagementRewards.engagements.rewardHarvestingCrops();
+                    if (rewardHarvestingCrops && ModUtils.isCropLike(block)) {
+                        return false; // Not handling as XP orbs will spawn
+                    }
+
                     Item item = block.asItem();
                     if (canEngage(player, item, EngagementCache.MINING)) {
-                        return engage(player, every(engagementRate, statCount), cache(EngagementCache.MINING, item));
+                        return engage(player, cache(EngagementCache.MINING, item));
                     }
+
+                    updateRemainingEngagement(player);
                 }
             }
 

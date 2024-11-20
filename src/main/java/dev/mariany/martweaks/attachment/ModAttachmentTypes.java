@@ -24,9 +24,9 @@ public class ModAttachmentTypes {
     public static final AttachmentType<List<RegistryEntry<Item>>> BUILDING_CACHE = createCache("building_cache");
     public static final AttachmentType<List<RegistryEntry<Item>>> MINING_CACHE = createCache("mining_cache");
 
-    public static final AttachmentType<Integer> ENGAGEMENT_RATE = AttachmentRegistry.<Integer>builder()
+    public static final AttachmentType<Integer> REMAINING_ENGAGEMENT = AttachmentRegistry.<Integer>builder()
             .persistent(Codec.INT).initializer(() -> ModConstants.DEFAULT_ENGAGEMENT_RATE)
-            .buildAndRegister(MarTweaks.id("engagement_rate"));
+            .buildAndRegister(MarTweaks.id("remaining_engagement"));
 
     private static AttachmentType<List<RegistryEntry<Item>>> createCache(String name) {
         return AttachmentRegistry.<List<RegistryEntry<Item>>>builder().persistent(ItemStack.ITEM_CODEC.listOf())

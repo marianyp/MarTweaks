@@ -1,6 +1,8 @@
 package dev.mariany.martweaks.util;
 
 import dev.mariany.martweaks.MarTweaks;
+import net.minecraft.block.Block;
+import net.minecraft.block.CropBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,5 +24,9 @@ public final class ModUtils {
 
     public static boolean canLavaSwim(LivingEntity entity) {
         return entity.hasStatusEffect(StatusEffects.FIRE_RESISTANCE) && MarTweaks.CONFIG.lavaSwimming.enabled();
+    }
+
+    public static boolean isCropLike(Block block) {
+        return block instanceof CropBlock || GourdCache.isGourd(block);
     }
 }

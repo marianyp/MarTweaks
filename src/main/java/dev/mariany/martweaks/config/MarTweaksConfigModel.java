@@ -72,7 +72,7 @@ public final class MarTweaksConfigModel {
 
     public static final class EngagementRewards {
         @Comment("Minimum experience points to give for an engagement reward.")
-        public int minXPReward = 2;
+        public int minXPReward = 3;
 
         @Comment("Maximum experience points to give for an engagement reward.")
         public int maxXPReward = 6;

@@ -31,6 +31,21 @@ public final class GourdCache {
         }
     }
 
+    public static boolean isGourd(Block block) {
+        Optional<RegistryKey<Block>> optionalRegistryKey = Registries.BLOCK.getKey(block);
+        if (optionalRegistryKey.isPresent()) {
+            RegistryKey<Block> registryKey = optionalRegistryKey.get();
+
+            for (Pair<RegistryKey<Block>, RegistryKey<Block>> gourd : gourds) {
+                if (gourd.getLeft().equals(registryKey)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public static boolean isGourd(World world, BlockPos pos, BlockState blockState) {
         Block gourd = blockState.getBlock();
         RegistryKey<Block> gourdKey = Registries.BLOCK.getKey(gourd).orElseThrow();
