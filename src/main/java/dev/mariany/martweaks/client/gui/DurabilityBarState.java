@@ -68,15 +68,18 @@ public class DurabilityBarState {
     }
 
     public void draw(DrawContext context, ItemStack stack, int x, int y) {
-        if (!stack.isEmpty() && stack.isItemBarVisible() && stack.isDamaged()) {
-            Integer color = this.getBarColor(stack);
-            if (color != null) {
-                int startX = x + 2;
-                int barY = y + BAR_WIDTH;
-                int fillWidth = getBarWidth(stack);
+        if (MarTweaksClient.CONFIG.durabilityWarning.enabled()) {
+            if (!stack.isEmpty() && stack.isItemBarVisible() && stack.isDamaged()) {
+                Integer color = this.getBarColor(stack);
+                if (color != null) {
+                    int startX = x + 2;
+                    int barY = y + BAR_WIDTH;
+                    int fillWidth = getBarWidth(stack);
 
-                context.fill(RenderLayer.getGuiOverlay(), startX, barY, startX + BAR_WIDTH, barY + 2, BLACK);
-                context.fill(RenderLayer.getGuiOverlay(), startX, barY, startX + fillWidth, barY + 1, color | BLACK);
+                    context.fill(RenderLayer.getGuiOverlay(), startX, barY, startX + BAR_WIDTH, barY + 2, BLACK);
+                    context.fill(RenderLayer.getGuiOverlay(), startX, barY, startX + fillWidth, barY + 1,
+                            color | BLACK);
+                }
             }
         }
     }
@@ -88,7 +91,6 @@ public class DurabilityBarState {
 
         public FilledState(int intervalMs) {
             this.intervalMs = intervalMs;
-            this.lastToggleTime = Util.getMeasuringTimeMs();
             this.filled = false;
         }
 

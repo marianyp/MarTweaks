@@ -15,13 +15,11 @@ public class DrawContextMixin {
     @Inject(method = "drawItemInSlot(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", at = @At(value = "TAIL"))
     private void injectDrawItemBarColorChange(TextRenderer textRenderer, ItemStack stack, int x, int y,
                                               String countOverride, CallbackInfo ci) {
-        if (MarTweaksClient.CONFIG.durabilityWarning.enabled()) {
-            DrawContext context = (DrawContext) (Object) this;
-            MatrixStack matrices = context.getMatrices();
+        DrawContext context = (DrawContext) (Object) this;
+        MatrixStack matrices = context.getMatrices();
 
-            matrices.push();
-            MarTweaksClient.DURABILITY_BAR_STATE.draw(context, stack, x, y);
-            matrices.pop();
-        }
+        matrices.push();
+        MarTweaksClient.DURABILITY_BAR_STATE.draw(context, stack, x, y);
+        matrices.pop();
     }
 }
