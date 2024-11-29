@@ -6,5 +6,12 @@
   "gamerule.strictEngagement.description": "Tracks blocks/items that a player has gained experience from to prevent cheesing/farming experience.",
   "gamerule.engagementRate": "Engagement Rate",
   "gamerule.engagementRate.description": "Generalized rate for how often a player receives an experience reward for mining or building.",
-  "item.martweaks.broken_arrow": "Broken Arrow"
+  "item.martweaks.broken_arrow": "Broken Arrow",
+  "text.config.martweaks-client.category.durabilityWarning": "Durability Warning",
+  "text.config.martweaks-client.category.quickMove": "Quick Move",
+  "text.config.martweaks-client.option.enableEngagementXpRewardSounds": "Enable Engagement Xp Reward Sounds",
+  "text.config.martweaks-client.option.durabilityWarning.enabled": "Enable Durability Warning",
+  "text.config.martweaks-client.option.durabilityWarning.warnThreshold": "Durability Warning Threshold",
+  "text.config.martweaks-client.option.quickMove.enabled": "Enable Quick Move",
+  "text.config.martweaks-client.option.quickMove.requireEmptyHand": "Quick Move Requires Empty Hand"
 }
