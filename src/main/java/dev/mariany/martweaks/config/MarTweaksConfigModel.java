@@ -30,6 +30,9 @@ public final class MarTweaksConfigModel {
     public EngagementRewards engagementRewards = new EngagementRewards();
 
     @Nest
+    public FarmlandTramplePrevention farmlandTramplePrevention = new FarmlandTramplePrevention();
+
+    @Nest
     public InFighting inFighting = new InFighting();
 
     @Nest
@@ -46,11 +49,6 @@ public final class MarTweaksConfigModel {
 
     @Nest
     public UnlimitedBedRange unlimitedBedRange = new UnlimitedBedRange();
-
-    public static final class Client {
-        @Comment("When enabled, prevents player icons from being hidden when they are too far from the covered map space.")
-        public boolean convenientMaps = true;
-    }
 
     public static final class ArrowRecovery {
         @Comment("When enabled, will allow the player to remove arrows from their body by shift clicking.")
@@ -116,6 +114,11 @@ public final class MarTweaksConfigModel {
                 public List<String> customDiscoveryTypes = List.of(LOOTR_LOOTED_STAT);
             }
         }
+    }
+
+    public static final class FarmlandTramplePrevention {
+        @Comment("Prevents farmland from being trampled when enabled.")
+        public boolean enabled = true;
     }
 
     public static final class InFighting {
