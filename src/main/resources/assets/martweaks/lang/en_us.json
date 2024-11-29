@@ -7,6 +7,7 @@
   "gamerule.engagementRate": "Engagement Rate",
   "gamerule.engagementRate.description": "Generalized rate for how often a player receives an experience reward for mining or building.",
   "item.martweaks.broken_arrow": "Broken Arrow",
+  "text.config.martweaks-client.title": "MarTweaks Client Config",
   "text.config.martweaks-client.category.durabilityWarning": "Durability Warning",
   "text.config.martweaks-client.category.quickMove": "Quick Move",
   "text.config.martweaks-client.option.enableEngagementXpRewardSounds": "Enable Engagement Xp Reward Sounds",
