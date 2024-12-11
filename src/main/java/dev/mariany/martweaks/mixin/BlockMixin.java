@@ -24,8 +24,8 @@ public class BlockMixin {
             if (GourdCache.isGourd(serverWorld, pos, state)) {
                 ItemStack tool = player.getMainHandStack();
                 boolean correctTool = tool.getItem().isCorrectForDrops(tool, state);
-                EngagementManager.onHarvest(serverWorld, pos,
-                        base -> correctTool ? EnchantmentHelper.getBlockExperience(serverWorld, tool, base + 4) : base);
+                EngagementManager.onHarvest(serverWorld, pos, base -> correctTool ? Math.max(1,
+                        EnchantmentHelper.getBlockExperience(serverWorld, tool, base + 4)) : base);
             }
         }
     }

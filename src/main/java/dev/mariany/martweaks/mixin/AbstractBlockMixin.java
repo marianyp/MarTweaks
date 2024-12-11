@@ -22,7 +22,7 @@ public class AbstractBlockMixin {
         if (state.getBlock() instanceof CropBlock cropBlock && cropBlock.isMature(state)) {
             boolean hoe = tool.isIn(ItemTags.HOES);
             EngagementManager.onHarvest(world, pos,
-                    base -> hoe ? EnchantmentHelper.getBlockExperience(world, tool, base) : base);
+                    base -> hoe ? Math.max(1, EnchantmentHelper.getBlockExperience(world, tool, base)) : base);
         }
     }
 }
