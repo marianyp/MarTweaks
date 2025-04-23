@@ -14,13 +14,18 @@ public class ClientPlayerEntityMixin {
         return original.call(player) || ((LavaAwareEntity) player).marTweaks$isTouchingLava();
     }
 
-    @WrapOperation(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSubmergedInWater()Z"))
-    public boolean interceptIsSubmergedInWater(ClientPlayerEntity player, Operation<Boolean> original) {
-        return original.call(player) || ((LavaAwareEntity) player).marTweaks$isSubmergedInLava();
+    @WrapOperation(method = "shouldStopSwimSprinting", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isTouchingWater()Z"))
+    public boolean wrapShouldStopSwimSprinting(ClientPlayerEntity player, Operation<Boolean> original) {
+        return original.call(player) || ((LavaAwareEntity) player).marTweaks$isTouchingLava();
     }
 
-    @WrapOperation(method = "isWalking", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSubmergedInWater()Z"))
-    public boolean wrapIsWalking(ClientPlayerEntity player, Operation<Boolean> original) {
+    @WrapOperation(method = "canStartSprinting", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isTouchingWater()Z"))
+    public boolean wrapCanStartSprintingTouch(ClientPlayerEntity player, Operation<Boolean> original) {
+        return original.call(player) || ((LavaAwareEntity) player).marTweaks$isTouchingLava();
+    }
+
+    @WrapOperation(method = "canStartSprinting", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSubmergedInWater()Z"))
+    public boolean wrapCanStartSprintingSubmerged(ClientPlayerEntity player, Operation<Boolean> original) {
         return original.call(player) || ((LavaAwareEntity) player).marTweaks$isSubmergedInLava();
     }
 }

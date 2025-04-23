@@ -49,7 +49,7 @@ public class BrokenArrowItem extends Item {
                             MathHelper.nextBetween(random, 0.1F, 0.3F));
                 }
 
-                return ActionResult.success(world.isClient);
+                return ActionResult.SUCCESS_SERVER;
             }
         }
 

@@ -7,7 +7,7 @@ import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.StemBlock;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.EnumProperty;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public final class GourdCache {
-    private static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
+    private static final EnumProperty<Direction> FACING = HorizontalFacingBlock.FACING;
     private static final Set<Pair<RegistryKey<Block>, RegistryKey<Block>>> gourds = new HashSet<>();
 
     public static void load() {

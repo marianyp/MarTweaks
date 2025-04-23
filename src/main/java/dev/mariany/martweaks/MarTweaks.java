@@ -2,6 +2,7 @@ package dev.mariany.martweaks;
 
 import dev.mariany.martweaks.block.ModBlocks;
 import dev.mariany.martweaks.config.MarTweaksConfig;
+import dev.mariany.martweaks.entity.ModEntities;
 import dev.mariany.martweaks.event.block.AttackBlockHandler;
 import dev.mariany.martweaks.event.block.UseBlockHandler;
 import dev.mariany.martweaks.event.entity.UseEntityHandler;
@@ -44,9 +45,10 @@ public class MarTweaks implements ModInitializer {
         Packets.register();
         ServerBoundPackets.init();
 
-        ModGamerules.registerModGamerules();
-        ModBlocks.registerModBlocks();
-        ModItems.registerModItems();
+        ModGamerules.bootstrap();
+        ModBlocks.bootstrap();
+        ModItems.bootstrap();
+        ModEntities.bootstrap();
 
         GourdCache.load();
 

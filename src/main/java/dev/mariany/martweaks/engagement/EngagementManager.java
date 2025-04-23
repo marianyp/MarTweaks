@@ -8,6 +8,7 @@ import dev.mariany.martweaks.util.ModUtils;
 import dev.mariany.martweaks.util.Pair;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -104,7 +105,7 @@ public class EngagementManager {
         int remainingEngagement = getRemainingEngagement(player) - 1;
 
         if (remainingEngagement < 0) {
-            int max = player.getWorld().getGameRules().get(ModGamerules.ENGAGEMENT_RATE).get();
+            int max = player.getServerWorld().getGameRules().get(ModGamerules.ENGAGEMENT_RATE).get();
             int min = Math.max(0, max <= 0 ? 0 : (max / 2) - 1);
             remainingEngagement = MathHelper.nextInt(player.getRandom(), min, max);
         }
@@ -113,7 +114,7 @@ public class EngagementManager {
     }
 
     static boolean canEngage(ServerPlayerEntity player, Item item, EngagementCache cacheType) {
-        boolean strict = player.getWorld().getGameRules().get(ModGamerules.STRICT_ENGAGEMENT).get();
+        boolean strict = player.getServerWorld().getGameRules().get(ModGamerules.STRICT_ENGAGEMENT).get();
 
         if (getRemainingEngagement(player) > 0) {
             return false;
@@ -154,7 +155,8 @@ public class EngagementManager {
     static class Building {
         static boolean handle(ServerPlayerEntity player, Stat<?> stat, int statCount) {
             if (MarTweaks.CONFIG.engagementRewards.engagements.rewardBuilding()) {
-                if (stat.getValue() instanceof BlockItem blockItem) {
+                if (stat.getValue() instanceof BlockItem blockItem && !blockItem.getDefaultStack()
+                        .contains(DataComponentTypes.FOOD)) {
                     if (canEngage(player, blockItem, EngagementCache.BUILDING)) {
                         return engage(player, cache(EngagementCache.BUILDING, blockItem));
                     }

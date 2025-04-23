@@ -6,7 +6,6 @@ import dev.mariany.martweaks.util.ModConstants;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Uuids;
 
@@ -29,7 +28,7 @@ public class ModAttachmentTypes {
             .buildAndRegister(MarTweaks.id("remaining_engagement"));
 
     private static AttachmentType<List<RegistryEntry<Item>>> createCache(String name) {
-        return AttachmentRegistry.<List<RegistryEntry<Item>>>builder().persistent(ItemStack.ITEM_CODEC.listOf())
+        return AttachmentRegistry.<List<RegistryEntry<Item>>>builder().persistent(Item.ENTRY_CODEC.listOf())
                 .initializer(ArrayList::new).copyOnDeath().buildAndRegister(MarTweaks.id(name));
     }
 }

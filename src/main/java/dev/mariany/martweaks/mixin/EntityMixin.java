@@ -20,6 +20,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public class EntityMixin implements LavaAwareEntity {
@@ -74,20 +76,12 @@ public class EntityMixin implements LavaAwareEntity {
     @WrapOperation(method = "updateWaterState", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;updateMovementInFluid(Lnet/minecraft/registry/tag/TagKey;D)Z"))
     protected boolean wrapUpdateWaterState(Entity entity, TagKey<Fluid> tag, double speed,
                                            Operation<Boolean> original) {
-        boolean lava = tag.equals(FluidTags.LAVA);
-        boolean fireResistant = false;
-
-        if (entity instanceof LivingEntity livingEntity) {
-            fireResistant = livingEntity.hasStatusEffect(StatusEffects.FIRE_RESISTANCE);
-
-            if (lava && fireResistant) {
-                speed = 0.014;
-            }
-        }
+        boolean fireResistant = entity instanceof LivingEntity livingEntity && livingEntity.hasStatusEffect(
+                StatusEffects.FIRE_RESISTANCE);
 
         boolean touching = original.call(entity, tag, speed);
 
-        if (lava) {
+        if (tag.equals(FluidTags.LAVA)) {
             if (touching && fireResistant) {
                 if (!touchingLava && !firstUpdate) {
                     entity.emitGameEvent(GameEvent.SPLASH);
@@ -102,18 +96,18 @@ public class EntityMixin implements LavaAwareEntity {
         return touching;
     }
 
-    @WrapOperation(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isInLava()Z"))
-    public boolean baseTick(Entity entity, Operation<Boolean> original) {
-        if (entity instanceof LivingEntity livingEntity) {
-            if (livingEntity.hasStatusEffect(StatusEffects.FIRE_RESISTANCE)) {
-                return false;
-            }
-        }
-        return original.call(entity);
-    }
-
     @WrapOperation(method = "isCrawling", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;isTouchingWater()Z"))
     public boolean wrapIsTouchingWater(Entity instance, Operation<Boolean> original) {
         return original.call(instance) || touchingLava;
+    }
+
+    @Inject(method = "doesRenderOnFire", at = @At(value = "RETURN"), cancellable = true)
+    public void injectDoesRenderOnFire(CallbackInfoReturnable<Boolean> cir) {
+        Entity entity = (Entity) (Object) this;
+        if (entity instanceof LivingEntity livingEntity) {
+            if (livingEntity.hasStatusEffect(StatusEffects.FIRE_RESISTANCE)) {
+                cir.setReturnValue(false);
+            }
+        }
     }
 }

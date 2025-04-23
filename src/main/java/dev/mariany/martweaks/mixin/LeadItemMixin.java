@@ -30,7 +30,7 @@ public class LeadItemMixin {
                 if (blockState.isIn(BlockTags.FENCES)) {
                     if (ConnectedLeashKnotEntity.place(player, pos)) {
                         stack.decrement(1);
-                        cir.setReturnValue(ActionResult.success(world.isClient));
+                        cir.setReturnValue(ActionResult.SUCCESS_SERVER);
                     }
                 }
             }

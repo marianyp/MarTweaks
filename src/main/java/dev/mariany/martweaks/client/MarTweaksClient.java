@@ -12,7 +12,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.LeashKnotEntityRenderer;
 
@@ -26,7 +26,7 @@ public class MarTweaksClient implements ClientModInitializer {
     public void onInitializeClient() {
         ClientBoundPackets.init();
         registerBlockRenderLayers();
-        EntityRendererRegistry.INSTANCE.register(ModEntities.CONNECTED_LEASH_KNOT, LeashKnotEntityRenderer::new);
+        EntityRendererRegistry.register(ModEntities.CONNECTED_LEASH_KNOT, LeashKnotEntityRenderer::new);
         ClientTickEvents.END_CLIENT_TICK.register(ClientTickHandler::onEnd);
     }
 

@@ -46,7 +46,7 @@ public class ConnectedLeashKnotEntity extends LeashKnotEntity implements Leashab
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        this.leashData = this.readLeashDataFromNbt(nbt);
+        this.readLeashDataFromNbt(nbt);
     }
 
     @Nullable
@@ -72,7 +72,7 @@ public class ConnectedLeashKnotEntity extends LeashKnotEntity implements Leashab
     @Override
     public void remove(Entity.RemovalReason reason) {
         if (!this.getWorld().isClient && reason.shouldDestroy() && this.isLeashed()) {
-            this.detachLeash(true, true);
+            this.detachLeash();
         }
 
         super.remove(reason);
@@ -119,7 +119,10 @@ public class ConnectedLeashKnotEntity extends LeashKnotEntity implements Leashab
     @Override
     public void tick() {
         super.tick();
-        Leashable.tickLeash(this);
+
+        if (this.getWorld() instanceof ServerWorld serverWorld) {
+            Leashable.tickLeash(serverWorld, this);
+        }
     }
 
     public static List<? extends Entity> getLeashedEntities(ServerWorld world) {

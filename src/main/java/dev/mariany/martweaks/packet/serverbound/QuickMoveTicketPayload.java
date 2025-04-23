@@ -12,8 +12,8 @@ public record QuickMoveTicketPayload(BlockPos pos, boolean useKnownItems,
     public static final CustomPayload.Id<QuickMoveTicketPayload> ID = new CustomPayload.Id<>(
             MarTweaks.id("quick_move_ticket"));
     public static final PacketCodec<RegistryByteBuf, QuickMoveTicketPayload> CODEC = PacketCodec.tuple(
-            BlockPos.PACKET_CODEC, QuickMoveTicketPayload::pos, PacketCodecs.BOOL,
-            QuickMoveTicketPayload::useKnownItems, PacketCodecs.BOOL, QuickMoveTicketPayload::shouldIncludeHotbar,
+            BlockPos.PACKET_CODEC, QuickMoveTicketPayload::pos, PacketCodecs.BOOLEAN,
+            QuickMoveTicketPayload::useKnownItems, PacketCodecs.BOOLEAN, QuickMoveTicketPayload::shouldIncludeHotbar,
             QuickMoveTicketPayload::new);
 
     @Override

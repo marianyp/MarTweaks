@@ -11,9 +11,9 @@ import net.minecraft.entity.mob.ElderGuardianEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.context.LootContextTypes;
+import net.minecraft.loot.context.LootWorldContext;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -39,12 +39,12 @@ public class ElderGuardianFight {
                     List<Entity> participants = getParticipants(elder);
 
                     for (Entity participant : participants) {
-                        LootContextParameterSet.Builder builder = new LootContextParameterSet.Builder(world).add(
+                        LootWorldContext.Builder builder = new LootWorldContext.Builder(world).add(
                                         LootContextParameters.ORIGIN, participant.getPos())
                                 .add(LootContextParameters.THIS_ENTITY, participant);
 
-                        LootContextParameterSet lootContextParameterSet = builder.build(LootContextTypes.GIFT);
-                        lootTable.generateLoot(lootContextParameterSet, elder.getLootTableSeed(),
+                        LootWorldContext lootWorldContext = builder.build(LootContextTypes.GIFT);
+                        lootTable.generateLoot(lootWorldContext, elder.getLootTableSeed(),
                                 stack -> dropLoot(stack, participant));
                         createRewardEffect(participant);
                     }
@@ -120,10 +120,12 @@ public class ElderGuardianFight {
     }
 
     private static void dropLoot(ItemStack stack, Entity participant) {
-        ItemEntity itemEntity = participant.dropStack(stack);
-        if (itemEntity != null) {
-            itemEntity.setOwner(participant.getUuid());
-            itemEntity.setAttached(ModAttachmentTypes.ELDER_REWARD, true);
+        if (participant.getWorld() instanceof ServerWorld serverWorld) {
+            ItemEntity itemEntity = participant.dropStack(serverWorld, stack);
+            if (itemEntity != null) {
+                itemEntity.setOwner(participant.getUuid());
+                itemEntity.setAttached(ModAttachmentTypes.ELDER_REWARD, true);
+            }
         }
     }
 }

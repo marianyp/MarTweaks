@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.mariany.martweaks.MarTweaks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.MapRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.map.MapDecoration;
 import net.minecraft.item.map.MapDecorationTypes;
@@ -18,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
-@Mixin(targets = "net.minecraft.client.render.MapRenderer$MapTexture")
+@Mixin(MapRenderer.class)
 public class MapRendererMixin {
-    @WrapOperation(method = "draw", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/map/MapState;getDecorations()Ljava/lang/Iterable;"))
+    @WrapOperation(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/map/MapState;getDecorations()Ljava/lang/Iterable;"))
     Iterable<MapDecoration> draw(MapState instance, Operation<Iterable<MapDecoration>> original) {
         Iterable<MapDecoration> iterable = original.call(instance);
 

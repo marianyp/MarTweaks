@@ -39,7 +39,7 @@ public class ModAdvancements {
             RegistryWrapper.WrapperLookup wrapperLookup) {
         Map<String, AdvancementCriterion<?>> requirements = new HashMap<>();
 
-        wrapperLookup.getWrapperOrThrow(RegistryKeys.BIOME).streamEntries().forEach(biomeReference -> {
+        wrapperLookup.getOrThrow(RegistryKeys.BIOME).streamEntries().forEach(biomeReference -> {
             String id = biomeReference.registryKey().getValue().toString().replace(':', '_');
             AdvancementCriterion<TickCriterion.Conditions> criterion = TickCriterion.Conditions.createLocation(
                     LocationPredicate.Builder.createBiome(biomeReference));
@@ -53,7 +53,7 @@ public class ModAdvancements {
             RegistryWrapper.WrapperLookup wrapperLookup) {
         Map<String, AdvancementCriterion<?>> requirements = new HashMap<>();
 
-        wrapperLookup.getWrapperOrThrow(RegistryKeys.STRUCTURE).streamEntries().forEach(biomeReference -> {
+        wrapperLookup.getOrThrow(RegistryKeys.STRUCTURE).streamEntries().forEach(biomeReference -> {
             String id = biomeReference.registryKey().getValue().toString().replace(':', '_');
             AdvancementCriterion<TickCriterion.Conditions> criterion = TickCriterion.Conditions.createLocation(
                     LocationPredicate.Builder.createStructure(biomeReference));

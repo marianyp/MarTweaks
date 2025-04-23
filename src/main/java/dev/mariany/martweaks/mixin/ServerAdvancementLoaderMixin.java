@@ -28,7 +28,7 @@ import java.util.Map;
 public class ServerAdvancementLoaderMixin {
     @Shadow
     @Final
-    private RegistryWrapper.WrapperLookup registryLookup;
+    private RegistryWrapper.WrapperLookup registries;
     @Shadow
     private AdvancementManager manager;
     @Shadow
@@ -41,13 +41,13 @@ public class ServerAdvancementLoaderMixin {
 
         if (MarTweaks.CONFIG.engagementRewards.engagements.discovery.rewardDiscoveringBiomes()) {
             AdvancementEntry biomesEntry = new AdvancementEntry(ModAdvancements.DISCOVERED_ALL_BIOMES,
-                    ModAdvancements.discoveredAllBiomes(registryLookup));
+                    ModAdvancements.discoveredAllBiomes(registries));
             entries.add(biomesEntry);
         }
 
         if (MarTweaks.CONFIG.engagementRewards.engagements.discovery.rewardDiscoveringStructures()) {
             AdvancementEntry structuresEntry = new AdvancementEntry(ModAdvancements.DISCOVERED_ALL_STRUCTURES,
-                    ModAdvancements.discoveredAllStructures(registryLookup));
+                    ModAdvancements.discoveredAllStructures(registries));
             entries.add(structuresEntry);
         }
 

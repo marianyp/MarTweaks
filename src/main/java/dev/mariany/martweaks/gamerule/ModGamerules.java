@@ -24,7 +24,7 @@ public class ModGamerules {
     public static final GameRules.Key<GameRules.BooleanRule> AUTO_CLOSE_FENCE_GATES = GameRuleRegistry.register(
             "autoCloseFenceGates", GameRules.Category.MISC, GameRuleFactory.createBooleanRule(true));
 
-    public static void registerModGamerules() {
-        MarTweaks.LOGGER.info("Registering Mod Gamerules for " + MarTweaks.MOD_ID);
+    public static void bootstrap() {
+        MarTweaks.LOGGER.info("Registering gamerules for " + MarTweaks.MOD_ID);
     }
 }

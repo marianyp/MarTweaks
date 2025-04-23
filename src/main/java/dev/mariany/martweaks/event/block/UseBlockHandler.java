@@ -162,7 +162,7 @@ public class UseBlockHandler {
         if (!Block.isFaceFullSquare(floorState.getCollisionShape(world, floorPos), Direction.UP)) {
             if (floorState.getHardness(world, floorPos) >= 0) {
                 world.breakBlock(floorPos, true);
-                world.setBlockState(floorPos, Blocks.SCULK_CATALYST.getDefaultState());
+                world.setBlockState(floorPos, Blocks.SCULK.getDefaultState());
             }
         }
     }
