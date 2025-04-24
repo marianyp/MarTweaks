@@ -34,11 +34,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class EngagementManager {
-    @FunctionalInterface
-    public interface QuadFunction<P1, P2, P3, P4, R> {
-        R apply(P1 one, P2 two, P3 three, P4 four);
-    }
-
     public static final Map<StatType<?>, TriFunction<ServerPlayerEntity, Stat<?>, Integer, Boolean>> BEFORE_STAT_INCREMENT_HANDLERS = Map.of(
             Stats.CRAFTED, Crafting::handle);
 
@@ -105,7 +100,8 @@ public class EngagementManager {
         int remainingEngagement = getRemainingEngagement(player) - 1;
 
         if (remainingEngagement < 0) {
-            int max = player.getServerWorld().getGameRules().get(ModGamerules.ENGAGEMENT_RATE).get();
+            int max = player.getServerWorld().getGameRules().get(ModGamerules.ENGAGEMENT_RATE)
+                    .get() + player.experienceLevel;
             int min = Math.max(0, max <= 0 ? 0 : (max / 2) - 1);
             remainingEngagement = MathHelper.nextInt(player.getRandom(), min, max);
         }
