@@ -3,8 +3,8 @@ package dev.mariany.martweaks.client.gui;
 import dev.mariany.martweaks.client.MarTweaksClient;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Util;
@@ -76,8 +76,8 @@ public class DurabilityBarState {
                     int barY = y + BAR_WIDTH;
                     int fillWidth = getBarWidth(stack);
 
-                    context.fill(RenderLayer.getGuiOverlay(), startX, barY, startX + BAR_WIDTH, barY + 2, BLACK);
-                    context.fill(RenderLayer.getGuiOverlay(), startX, barY, startX + fillWidth, barY + 1,
+                    context.fill(RenderPipelines.GUI, startX, barY, startX + BAR_WIDTH, barY + 2, BLACK);
+                    context.fill(RenderPipelines.GUI, startX, barY, startX + fillWidth, barY + 1,
                             color | BLACK);
                 }
             }

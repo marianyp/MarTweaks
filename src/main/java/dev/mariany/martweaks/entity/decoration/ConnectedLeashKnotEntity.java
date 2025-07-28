@@ -6,13 +6,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Leashable;
 import net.minecraft.entity.decoration.LeashKnotEntity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.network.EntityTrackerEntry;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -38,15 +39,15 @@ public class ConnectedLeashKnotEntity extends LeashKnotEntity implements Leashab
     }
 
     @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        this.writeLeashDataToNbt(nbt, this.leashData);
+    public void writeCustomData(WriteView view) {
+        super.writeCustomData(view);
+        this.writeLeashData(view, this.leashData);
     }
 
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        this.readLeashDataFromNbt(nbt);
+    public void readCustomData(ReadView view) {
+        super.readCustomData(view);
+        this.readLeashData(view);
     }
 
     @Nullable
@@ -61,12 +62,12 @@ public class ConnectedLeashKnotEntity extends LeashKnotEntity implements Leashab
     }
 
     @Override
-    public boolean beforeLeashTick(Entity leashHolder, float distance) {
-        return !(leashHolder instanceof LeashKnotEntity);
+    public void beforeLeashTick(Entity leashHolder) {
     }
 
     @Override
-    public void applyLeashElasticity(Entity leashHolder, float distance) {
+    public boolean applyElasticity(Entity leashHolder, Leashable.LeashData data) {
+        return false;
     }
 
     @Override

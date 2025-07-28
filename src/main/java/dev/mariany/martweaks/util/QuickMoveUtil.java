@@ -18,7 +18,7 @@ public final class QuickMoveUtil {
 
     public static void quickMove(ServerPlayerEntity player, BlockPos blockPos, boolean useKnownItems,
                                  boolean includeHotbar) {
-        ServerWorld world = player.getServerWorld();
+        ServerWorld world = player.getWorld();
         PlayerInventory playerInventory = player.getInventory();
         Inventory inventory = HopperBlockEntity.getInventoryAt(world, blockPos);
 

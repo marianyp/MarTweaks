@@ -75,7 +75,7 @@ public class UseBlockHandler {
     private static boolean handleLootDiscovery(PlayerEntity player, BlockPos blockPos) {
         if (player instanceof ServerPlayerEntity serverPlayer) {
             if (MarTweaks.CONFIG.engagementRewards.engagements.discovery.rewardDiscoveringLoot()) {
-                if (isVanillaLootable(serverPlayer, serverPlayer.getServerWorld(), blockPos)) {
+                if (isVanillaLootable(serverPlayer, serverPlayer.getWorld(), blockPos)) {
                     EngagementManager.onDiscover(serverPlayer);
                     return true;
                 }
