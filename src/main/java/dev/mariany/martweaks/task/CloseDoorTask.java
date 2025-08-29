@@ -40,22 +40,35 @@ public class CloseDoorTask {
         create(world, pos, closeInTicks, handleDoors, handleTrapdoors, handleFenceGates);
     }
 
-    private static void create(ServerWorld world, BlockPos pos, int closeInTicks, boolean handleDoors,
-                              boolean handleTrapdoors, boolean handleFenceGates) {
-        BlockState blockState = world.getBlockState(pos);
-        Block block = blockState.getBlock();
-
-        if (isValidState(blockState, handleDoors, handleTrapdoors, handleFenceGates)) {
-            CloseDoorTask task = new CloseDoorTask(world, pos, block);
+    private static void create(
+            ServerWorld world,
+            BlockPos pos,
+            int closeInTicks,
+            boolean handleDoors,
+            boolean handleTrapdoors,
+            boolean handleFenceGates
+    ) {
+        if (isValidState(world, pos, handleDoors, handleTrapdoors, handleFenceGates)) {
+            CloseDoorTask task = new CloseDoorTask(world, pos, world.getBlockState(pos).getBlock());
             MarTweaks.queueServerWork(closeInTicks, task::run);
         }
     }
 
-    public static boolean isValidState(BlockState blockState, boolean handleDoors, boolean handleTrapdoors,
-                                       boolean handleFenceGates) {
-        Block block = blockState.getBlock();
+    public static boolean isValidState(
+            ServerWorld world,
+            BlockPos pos,
+            boolean handleDoors,
+            boolean handleTrapdoors,
+            boolean handleFenceGates
+    ) {
+        BlockState state = world.getBlockState(pos);
+        Block block = state.getBlock();
 
-        if (!blockState.contains(OPEN) || !blockState.get(OPEN)) {
+        if (!state.contains(OPEN) || !state.get(OPEN)) {
+            return false;
+        }
+
+        if (world.isReceivingRedstonePower(pos)) {
             return false;
         }
 
@@ -106,7 +119,9 @@ public class CloseDoorTask {
     }
 
     private void playCloseSound(SoundEvent sound) {
-        this.world.playSound(null, this.pos, sound, SoundCategory.BLOCKS, 1F,
-                MathHelper.nextFloat(this.world.random, 0.9F, 1F));
+        this.world.playSound(
+                null, this.pos, sound, SoundCategory.BLOCKS, 1F,
+                MathHelper.nextFloat(this.world.random, 0.9F, 1F)
+        );
     }
 }
