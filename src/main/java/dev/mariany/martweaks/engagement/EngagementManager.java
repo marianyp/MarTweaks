@@ -3,10 +3,8 @@ package dev.mariany.martweaks.engagement;
 import dev.mariany.martweaks.MarTweaks;
 import dev.mariany.martweaks.attachment.ModAttachmentTypes;
 import dev.mariany.martweaks.gamerule.ModGamerules;
-import dev.mariany.martweaks.packet.clientbound.EngagedPayload;
 import dev.mariany.martweaks.util.ModUtils;
 import dev.mariany.martweaks.util.Pair;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.ExperienceOrbEntity;
@@ -84,8 +82,8 @@ public class EngagementManager {
         int min = MarTweaks.CONFIG.engagementRewards.minXPReward();
         int max = MarTweaks.CONFIG.engagementRewards.maxXPReward();
         int xpReward = MathHelper.floor(multiplier * MathHelper.nextInt(player.getRandom(), min, max));
-        player.addExperience(xpReward);
-        ServerPlayNetworking.send(player, new EngagedPayload());
+        ServerWorld world = player.getWorld();
+        world.spawnEntity(new ExperienceOrbEntity(world, player.getPos(), Vec3d.ZERO, xpReward));
     }
 
     static int getStatCount(ServerPlayerEntity player, Stat<?> stat) {

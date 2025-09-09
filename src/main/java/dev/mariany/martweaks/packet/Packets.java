@@ -1,6 +1,5 @@
 package dev.mariany.martweaks.packet;
 
-import dev.mariany.martweaks.packet.clientbound.EngagedPayload;
 import dev.mariany.martweaks.packet.clientbound.RequestQuickMovePayload;
 import dev.mariany.martweaks.packet.serverbound.QuickMoveTicketPayload;
 import dev.mariany.martweaks.packet.serverbound.RemoveArrowPayload;
@@ -14,7 +13,6 @@ public class Packets {
     }
 
     private static void clientbound(PayloadTypeRegistry<RegistryByteBuf> registry) {
-        registry.register(EngagedPayload.ID, EngagedPayload.CODEC);
         registry.register(RequestQuickMovePayload.ID, RequestQuickMovePayload.CODEC);
     }
 
