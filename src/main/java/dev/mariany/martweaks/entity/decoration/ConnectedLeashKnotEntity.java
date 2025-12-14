@@ -72,7 +72,7 @@ public class ConnectedLeashKnotEntity extends LeashKnotEntity implements Leashab
 
     @Override
     public void remove(Entity.RemovalReason reason) {
-        if (!this.getWorld().isClient && reason.shouldDestroy() && this.isLeashed()) {
+        if (!this.getEntityWorld().isClient() && reason.shouldDestroy() && this.isLeashed()) {
             this.detachLeash();
         }
 
@@ -81,7 +81,7 @@ public class ConnectedLeashKnotEntity extends LeashKnotEntity implements Leashab
 
     @Override
     public Packet<ClientPlayPacketListener> createSpawnPacket(EntityTrackerEntry entityTrackerEntry) {
-        ServerWorld world = (ServerWorld) this.getWorld();
+        World world = this.getEntityWorld();
         int holderId = 0;
 
         if (leashData != null && leashData.unresolvedLeashData != null) {
@@ -121,18 +121,20 @@ public class ConnectedLeashKnotEntity extends LeashKnotEntity implements Leashab
     public void tick() {
         super.tick();
 
-        if (this.getWorld() instanceof ServerWorld serverWorld) {
+        if (this.getEntityWorld() instanceof ServerWorld serverWorld) {
             Leashable.tickLeash(serverWorld, this);
         }
     }
 
     public static List<? extends Entity> getLeashedEntities(ServerWorld world) {
-        return world.getEntitiesByType(TypeFilter.instanceOf(Entity.class),
-                entity -> !entity.isRemoved() && entity instanceof Leashable leashable && leashable.isLeashed());
+        return world.getEntitiesByType(
+                TypeFilter.instanceOf(Entity.class),
+                entity -> !entity.isRemoved() && entity instanceof Leashable leashable && leashable.isLeashed()
+        );
     }
 
     public static List<? extends Entity> getLeashedTo(Entity holder) {
-        if (holder.getWorld() instanceof ServerWorld serverWorld) {
+        if (holder.getEntityWorld() instanceof ServerWorld serverWorld) {
             return getLeashedEntities(serverWorld).stream().filter(entity -> {
                 if (entity instanceof Leashable leashable) {
                     Entity entitiesHolder = leashable.getLeashHolder();
@@ -153,10 +155,12 @@ public class ConnectedLeashKnotEntity extends LeashKnotEntity implements Leashab
             return connectedLeashKnot;
         }
 
-        World world = original.getWorld();
+        World world = original.getEntityWorld();
 
-        ConnectedLeashKnotEntity connectedLeashKnot = new ConnectedLeashKnotEntity(world,
-                BlockPos.ofFloored(original.getPos()));
+        ConnectedLeashKnotEntity connectedLeashKnot = new ConnectedLeashKnotEntity(
+                world,
+                BlockPos.ofFloored(original.getEntityPos())
+        );
 
         connectedLeashKnot.copyPositionAndRotation(original);
 
@@ -182,8 +186,10 @@ public class ConnectedLeashKnotEntity extends LeashKnotEntity implements Leashab
         int y = pos.getY();
         int z = pos.getZ();
 
-        List<LeashKnotEntity> leashKnotEntities = world.getNonSpectatingEntities(LeashKnotEntity.class,
-                new Box(x - 1, y - 1, z - 1, x + 1, y + 1, z + 1));
+        List<LeashKnotEntity> leashKnotEntities = world.getNonSpectatingEntities(
+                LeashKnotEntity.class,
+                new Box(x - 1, y - 1, z - 1, x + 1, y + 1, z + 1)
+        );
 
         for (LeashKnotEntity leashKnot : leashKnotEntities) {
             if (leashKnot.getAttachedBlockPos().equals(pos)) {
@@ -197,13 +203,15 @@ public class ConnectedLeashKnotEntity extends LeashKnotEntity implements Leashab
     }
 
     public static boolean place(Entity owner, BlockPos pos) {
-        World world = owner.getWorld();
+        World world = owner.getEntityWorld();
         BlockState blockState = world.getBlockState(pos);
+
         if (blockState.isIn(BlockTags.FENCES)) {
             ConnectedLeashKnotEntity connectedLeashKnot = getOrCreate(world, pos);
             connectedLeashKnot.attachLeash(owner, true);
             return true;
         }
+
         return false;
     }
 }

@@ -2,7 +2,7 @@ package dev.mariany.martweaks.item.custom;
 
 import dev.mariany.martweaks.MarTweaks;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.FletchingTableBlock;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,7 +36,7 @@ public class BrokenArrowItem extends Item {
         BlockState blockState = world.getBlockState(pos);
 
         if (player != null) {
-            if (blockState.getBlock() instanceof FletchingTableBlock) {
+            if (blockState.getBlock().equals(Blocks.FLETCHING_TABLE)) {
                 if (world instanceof ServerWorld serverWorld) {
                     repair(world, pos, stack);
 

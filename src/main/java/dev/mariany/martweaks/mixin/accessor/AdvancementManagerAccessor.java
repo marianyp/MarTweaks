@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(AdvancementManager.class)
-public interface AdvancementManagerAccesor {
+public interface AdvancementManagerAccessor {
     @Invoker("tryAdd")
     boolean martweaks$tryAdd(AdvancementEntry advancement);
 }

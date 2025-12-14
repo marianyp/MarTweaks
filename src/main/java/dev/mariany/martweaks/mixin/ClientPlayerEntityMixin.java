@@ -19,11 +19,6 @@ public class ClientPlayerEntityMixin {
         return original.call(player) || ((LavaAwareEntity) player).marTweaks$isTouchingLava();
     }
 
-    @WrapOperation(method = "canStartSprinting", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isTouchingWater()Z"))
-    public boolean wrapCanStartSprintingTouch(ClientPlayerEntity player, Operation<Boolean> original) {
-        return original.call(player) || ((LavaAwareEntity) player).marTweaks$isTouchingLava();
-    }
-
     @WrapOperation(method = "canStartSprinting", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSubmergedInWater()Z"))
     public boolean wrapCanStartSprintingSubmerged(ClientPlayerEntity player, Operation<Boolean> original) {
         return original.call(player) || ((LavaAwareEntity) player).marTweaks$isSubmergedInLava();

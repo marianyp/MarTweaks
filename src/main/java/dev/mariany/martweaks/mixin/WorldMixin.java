@@ -21,7 +21,6 @@ import java.util.Set;
 @Mixin(World.class)
 public class WorldMixin implements DoorFlaggable {
     @Unique
-    @Nullable
     private final Set<BlockPos> flaggedDoorPositions = new HashSet<>();
 
     @Inject(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;II)Z", at = @At(value = "RETURN"))
@@ -47,9 +46,7 @@ public class WorldMixin implements DoorFlaggable {
 
     @Override
     public void marTweaks$flagDoorPos(BlockPos pos) {
-        if (this.flaggedDoorPositions != null) {
-            this.flaggedDoorPositions.add(pos);
-        }
+        this.flaggedDoorPositions.add(pos);
     }
 
     @Override

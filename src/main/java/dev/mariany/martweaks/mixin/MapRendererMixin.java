@@ -33,7 +33,7 @@ public class MapRendererMixin {
         ClientPlayerEntity player = client.player;
 
         if (player != null) {
-            ClientWorld world = (ClientWorld) player.getWorld();
+            ClientWorld world = (ClientWorld) player.getEntityWorld();
             List<MapDecoration> decorations = StreamSupport.stream(iterable.spliterator(), false).toList();
             List<MapDecoration> updated = new ArrayList<>();
 

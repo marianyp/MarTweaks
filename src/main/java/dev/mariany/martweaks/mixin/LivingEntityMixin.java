@@ -21,8 +21,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
     @Inject(method = "damage", at = @At(value = "HEAD"), cancellable = true)
-    public void injectDamage(ServerWorld world, DamageSource source, float amount,
-                             CallbackInfoReturnable<Boolean> cir) {
+    public void injectDamage(
+            ServerWorld world, DamageSource source, float amount,
+            CallbackInfoReturnable<Boolean> cir
+    ) {
         LivingEntity livingEntity = (LivingEntity) (Object) this;
         if (livingEntity instanceof Leashable leashable && leashable.isLeashed()) {
             if (source.isOf(DamageTypes.FALL) || source.isOf(DamageTypes.IN_WALL)) {
@@ -31,7 +33,12 @@ public class LivingEntityMixin {
         }
     }
 
-    @WrapOperation(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;onKilledBy(Lnet/minecraft/entity/LivingEntity;)V"))
+    @WrapOperation(
+            method = "onDeath", at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/entity/LivingEntity;onKilledBy(Lnet/minecraft/entity/LivingEntity;)V"
+    )
+    )
     public void wrapOnDeath(LivingEntity instance, LivingEntity adversary, Operation<Void> original) {
         if (instance instanceof ElderGuardianEntity elder) {
             ElderGuardianFight.onElderDeath(elder);
@@ -39,12 +46,15 @@ public class LivingEntityMixin {
         original.call(instance, adversary);
     }
 
-    @WrapOperation(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isTouchingWater()Z"))
-    public boolean interceptIsTouchingWater(LivingEntity instance, Operation<Boolean> original) {
-        boolean touching = original.call(instance);
+    @WrapOperation(
+            method = "travel",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isTouchingWater()Z")
+    )
+    public boolean interceptIsTouchingWater(LivingEntity livingEntity, Operation<Boolean> original) {
+        boolean touching = original.call(livingEntity);
 
         if (!touching) {
-            if (instance instanceof PlayerEntity player) {
+            if (livingEntity instanceof PlayerEntity player) {
                 return ((LavaAwareEntity) player).marTweaks$isTouchingLava();
             }
         }
@@ -52,7 +62,9 @@ public class LivingEntityMixin {
         return touching;
     }
 
-    @WrapOperation(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isInLava()Z"))
+    @WrapOperation(
+            method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isInLava()Z")
+    )
     public boolean interceptIsInLava(LivingEntity entity, Operation<Boolean> original) {
         if (ModUtils.canLavaSwim(entity)) {
             return false;
@@ -61,17 +73,36 @@ public class LivingEntityMixin {
         return original.call(entity);
     }
 
-    @WrapOperation(method = "travelInFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isTouchingWater()Z"))
+    @WrapOperation(
+            method = "travelInFluid",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isTouchingWater()Z")
+    )
     public boolean wrapTravelInFluidWater(LivingEntity entity, Operation<Boolean> original) {
-        boolean swimmingInLava = entity instanceof LavaAwareEntity lavaAwareEntity && lavaAwareEntity.marTweaks$isTouchingLava() && entity.isSwimming();
+        if (entity instanceof LavaAwareEntity lavaAwareEntity) {
+            if (lavaAwareEntity.marTweaks$isTouchingLava()) {
+                return true;
+            }
+        }
 
-        return swimmingInLava || original.call(entity);
+        return original.call(entity);
     }
 
-    @WrapOperation(method = "travelInFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyFluidMovingSpeed(DZLnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;"))
-    public Vec3d wrapTravelInFluidSpeed(LivingEntity entity, double gravity, boolean falling, Vec3d motion,
-                                        Operation<Vec3d> original) {
-        if (entity instanceof LavaAwareEntity lavaAwareEntity && lavaAwareEntity.marTweaks$isSubmergedInLava() && entity.isSwimming()) {
+    @WrapOperation(
+            method = "travelInFluid",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/entity/LivingEntity;applyFluidMovingSpeed(DZLnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;"
+            )
+    )
+    public Vec3d wrapTravelInFluidSpeed(
+            LivingEntity entity,
+            double gravity,
+            boolean falling,
+            Vec3d motion,
+            Operation<Vec3d> original
+    ) {
+        if (entity instanceof LavaAwareEntity lavaAwareEntity && lavaAwareEntity.marTweaks$isSubmergedInLava() &&
+                entity.isSwimming()) {
             motion = motion.multiply(0.9325);
         }
 

@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(FenceGateBlock.class)
-public interface FenceGateBlockAccesor {
+public interface FenceGateBlockAccessor {
     @Accessor("type")
     WoodType martweaks$type();
 }

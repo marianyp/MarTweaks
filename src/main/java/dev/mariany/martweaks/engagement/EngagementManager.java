@@ -82,8 +82,8 @@ public class EngagementManager {
         int min = MarTweaks.CONFIG.engagementRewards.minXPReward();
         int max = MarTweaks.CONFIG.engagementRewards.maxXPReward();
         int xpReward = MathHelper.floor(multiplier * MathHelper.nextInt(player.getRandom(), min, max));
-        ServerWorld world = player.getWorld();
-        world.spawnEntity(new ExperienceOrbEntity(world, player.getPos(), Vec3d.ZERO, xpReward));
+        ServerWorld world = player.getEntityWorld();
+        world.spawnEntity(new ExperienceOrbEntity(world, player.getEntityPos(), Vec3d.ZERO, xpReward));
     }
 
     static int getStatCount(ServerPlayerEntity player, Stat<?> stat) {
@@ -98,8 +98,9 @@ public class EngagementManager {
         int remainingEngagement = getRemainingEngagement(player) - 1;
 
         if (remainingEngagement < 0) {
-            int max = player.getWorld().getGameRules().get(ModGamerules.ENGAGEMENT_RATE)
-                    .get() + player.experienceLevel;
+            ServerWorld world = player.getEntityWorld();
+            GameRules gameRules = world.getGameRules();
+            int max = gameRules.get(ModGamerules.ENGAGEMENT_RATE).get() + player.experienceLevel;
             int min = Math.max(0, max <= 0 ? 0 : (max / 2) - 1);
             remainingEngagement = MathHelper.nextInt(player.getRandom(), min, max);
         }
@@ -108,7 +109,7 @@ public class EngagementManager {
     }
 
     static boolean canEngage(ServerPlayerEntity player, Item item, EngagementCache cacheType) {
-        boolean strict = player.getWorld().getGameRules().get(ModGamerules.STRICT_ENGAGEMENT).get();
+        boolean strict = player.getEntityWorld().getGameRules().get(ModGamerules.STRICT_ENGAGEMENT).get();
 
         if (getRemainingEngagement(player) > 0) {
             return false;

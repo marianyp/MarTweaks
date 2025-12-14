@@ -24,7 +24,7 @@ public class ItemEntityTickHandler {
 
     private static void spawnRewardEffects(ItemEntity itemEntity) {
         if (itemEntity.getAttachedOrElse(ModAttachmentTypes.ELDER_REWARD, false)) {
-            ServerWorld world = (ServerWorld) itemEntity.getWorld();
+            ServerWorld world = (ServerWorld) itemEntity.getEntityWorld();
             Random random = world.random;
 
             if (itemEntity.age % 20 == 0) {

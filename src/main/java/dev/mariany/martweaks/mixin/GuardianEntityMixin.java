@@ -15,7 +15,7 @@ public class GuardianEntityMixin {
     @Inject(method = "damage", at = @At(value = "RETURN"))
     public void damage(ServerWorld world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         GuardianEntity guardian = (GuardianEntity) (Object) this;
-        if (!guardian.getWorld().isClient && guardian instanceof ElderGuardianEntity elder) {
+        if (!guardian.getEntityWorld().isClient() && guardian instanceof ElderGuardianEntity elder) {
             ElderGuardianFight.onElderDamaged(elder, source);
         }
     }

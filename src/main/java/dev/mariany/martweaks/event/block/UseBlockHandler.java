@@ -61,7 +61,7 @@ public class UseBlockHandler {
     }
 
     private static void handleDoors(PlayerEntity player, BlockPos pos) {
-        if (player.getWorld() instanceof ServerWorld serverWorld) {
+        if (player.getEntityWorld() instanceof ServerWorld serverWorld) {
             if (player.isSneaking()) {
                 BlockState state = serverWorld.getBlockState(pos);
                 if (state.contains(DoorBlock.HALF) && state.get(DoorBlock.HALF).equals(DoubleBlockHalf.UPPER)) {
@@ -75,7 +75,7 @@ public class UseBlockHandler {
     private static boolean handleLootDiscovery(PlayerEntity player, BlockPos blockPos) {
         if (player instanceof ServerPlayerEntity serverPlayer) {
             if (MarTweaks.CONFIG.engagementRewards.engagements.discovery.rewardDiscoveringLoot()) {
-                if (isVanillaLootable(serverPlayer, serverPlayer.getWorld(), blockPos)) {
+                if (isVanillaLootable(serverPlayer, serverPlayer.getEntityWorld(), blockPos)) {
                     EngagementManager.onDiscover(serverPlayer);
                     return true;
                 }
@@ -96,13 +96,13 @@ public class UseBlockHandler {
     }
 
     private static Pair<Item, Block> getHandlerKey(PlayerEntity player, ItemStack stack, BlockPos pos) {
-        BlockState blockState = player.getWorld().getBlockState(pos);
+        BlockState blockState = player.getEntityWorld().getBlockState(pos);
         return new Pair<>(stack.getItem(), blockState.getBlock());
     }
 
     private static ActionResult recover(PlayerEntity player, ItemStack stack) {
         if (MarTweaks.CONFIG.recoveryCompass.enabled()) {
-            if (player.getWorld() instanceof ServerWorld world) {
+            if (player.getEntityWorld() instanceof ServerWorld world) {
                 MinecraftServer server = world.getServer();
                 Optional<GlobalPos> optionalLastDeathPos = player.getLastDeathPos();
 

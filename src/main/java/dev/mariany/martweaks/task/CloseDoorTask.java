@@ -3,8 +3,8 @@ package dev.mariany.martweaks.task;
 import dev.mariany.martweaks.MarTweaks;
 import dev.mariany.martweaks.block.DoorFlaggable;
 import dev.mariany.martweaks.gamerule.ModGamerules;
-import dev.mariany.martweaks.mixin.accessor.FenceGateBlockAccesor;
-import dev.mariany.martweaks.mixin.accessor.TrapdoorBlockAccesor;
+import dev.mariany.martweaks.mixin.accessor.FenceGateBlockAccessor;
+import dev.mariany.martweaks.mixin.accessor.TrapdoorBlockAccessor;
 import net.minecraft.block.*;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -105,11 +105,11 @@ public class CloseDoorTask {
             this.world.setBlockState(this.pos, blockState.with(OPEN, false));
 
             if (this.block instanceof TrapdoorBlock trapdoorBlock) {
-                closeSound = ((TrapdoorBlockAccesor) trapdoorBlock).martweaks$blockSetType().trapdoorClose();
+                closeSound = ((TrapdoorBlockAccessor) trapdoorBlock).martweaks$blockSetType().trapdoorClose();
             }
 
             if (this.block instanceof FenceGateBlock fenceGateBlock) {
-                closeSound = ((FenceGateBlockAccesor) fenceGateBlock).martweaks$type().fenceGateClose();
+                closeSound = ((FenceGateBlockAccessor) fenceGateBlock).martweaks$type().fenceGateClose();
             }
         }
 

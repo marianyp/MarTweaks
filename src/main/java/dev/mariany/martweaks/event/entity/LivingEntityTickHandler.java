@@ -32,14 +32,22 @@ public class LivingEntityTickHandler {
     }
 
     private static void preventLeadBreak(MobEntity mob) {
-        ServerWorld serverWorld = (ServerWorld) mob.getWorld();
+        ServerWorld serverWorld = (ServerWorld) mob.getEntityWorld();
         Entity holder = mob.getLeashHolder();
 
-        if (holder != null && holder.getWorld() == mob.getWorld()) {
+        if (holder != null && holder.getEntityWorld() == mob.getEntityWorld()) {
             if (mob.distanceTo(holder) >= MAX_LEASH_DISTANCE) {
                 mob.teleportTo(
-                        new TeleportTarget(serverWorld, holder.getPos(), Vec3d.ZERO, mob.getYaw(), mob.getPitch(),
-                                TeleportTarget.NO_OP));
+                        new TeleportTarget(
+                                serverWorld,
+                                holder.getEntityPos(),
+                                Vec3d.ZERO,
+                                mob.getYaw(),
+                                mob.getPitch(),
+                                TeleportTarget.NO_OP
+                        )
+                );
+
                 mob.fallDistance = 0;
             }
         }

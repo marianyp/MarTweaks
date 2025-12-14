@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(TrapdoorBlock.class)
-public interface TrapdoorBlockAccesor {
+public interface TrapdoorBlockAccessor {
     @Accessor("blockSetType")
     BlockSetType martweaks$blockSetType();
 }

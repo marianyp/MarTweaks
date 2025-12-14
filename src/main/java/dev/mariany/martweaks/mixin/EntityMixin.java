@@ -49,7 +49,7 @@ public class EntityMixin implements LavaAwareEntity {
 
         if (!swimming) {
             if (entity instanceof PlayerEntity player) {
-                World world = player.getWorld();
+                World world = player.getEntityWorld();
                 BlockPos pos = player.getBlockPos();
                 FluidState fluidState = world.getFluidState(pos);
 

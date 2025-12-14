@@ -17,7 +17,7 @@ public class ServerBoundPackets {
         ServerPlayNetworking.registerGlobalReceiver(RemoveArrowPayload.ID, (payload, context) -> {
             if (MarTweaks.CONFIG.arrowRecovery.enabled()) {
                 ServerPlayerEntity player = context.player();
-                ServerWorld world = player.getWorld();
+                ServerWorld world = player.getEntityWorld();
 
                 int stuckArrowCount = player.getStuckArrowCount();
                 if (stuckArrowCount > 0) {

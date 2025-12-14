@@ -15,12 +15,20 @@ import net.minecraft.util.Util;
 import java.util.function.Function;
 
 public class ModBlocks {
-    public static final Block SUNFLOWER = register("sunflower", SunflowerBlock::new,
-            AbstractBlock.Settings.copy(Blocks.SUNFLOWER)
-                    .overrideTranslationKey(Util.createTranslationKey("block", Identifier.ofVanilla("sunflower"))));
+    public static final Block SUNFLOWER = register(
+            "sunflower",
+            SunflowerBlock::new,
+            AbstractBlock.Settings
+                    .copy(Blocks.SUNFLOWER)
+                    .overrideTranslationKey(
+                            Util.createTranslationKey("block", Identifier.ofVanilla("sunflower"))
+                    )
+    );
 
-    private static Block register(String name, Function<AbstractBlock.Settings, Block> factory,
-                                  AbstractBlock.Settings settings) {
+    private static Block register(
+            String name, Function<AbstractBlock.Settings, Block> factory,
+            AbstractBlock.Settings settings
+    ) {
         RegistryKey<Block> key = RegistryKey.of(RegistryKeys.BLOCK, MarTweaks.id(name));
         Block block = factory.apply(settings.registryKey(key));
         return Registry.register(Registries.BLOCK, key, block);

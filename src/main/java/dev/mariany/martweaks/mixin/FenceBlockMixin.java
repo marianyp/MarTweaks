@@ -50,7 +50,7 @@ public class FenceBlockMixin {
 
     @Unique
     private static void lookAt(Entity entity, Entity lookAt) {
-        entity.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, lookAt.getPos());
+        entity.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, lookAt.getEntityPos());
         entity.velocityDirty = true;
     }
 }

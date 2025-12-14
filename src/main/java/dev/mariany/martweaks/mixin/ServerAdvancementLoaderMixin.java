@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import dev.mariany.martweaks.MarTweaks;
 import dev.mariany.martweaks.advancement.ModAdvancements;
-import dev.mariany.martweaks.mixin.accessor.AdvancementManagerAccesor;
+import dev.mariany.martweaks.mixin.accessor.AdvancementManagerAccessor;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.advancement.AdvancementManager;
 import net.minecraft.registry.RegistryWrapper;
@@ -55,7 +55,7 @@ public class ServerAdvancementLoaderMixin {
 
         for (AdvancementEntry entry : entries) {
             advancementsCopy.put(entry.id(), entry);
-            ((AdvancementManagerAccesor) manager).martweaks$tryAdd(entry);
+            ((AdvancementManagerAccessor) manager).martweaks$tryAdd(entry);
         }
 
         this.advancements = ImmutableMap.copyOf(advancementsCopy);

@@ -30,7 +30,7 @@ import java.util.UUID;
 public class ElderGuardianFight {
     public static void onElderDeath(ElderGuardianEntity elder) {
         if (MarTweaks.CONFIG.oceanMonumentRewards.enabled()) {
-            if (elder.getWorld() instanceof ServerWorld world) {
+            if (elder.getEntityWorld() instanceof ServerWorld world) {
                 List<ElderGuardianEntity> neighbouringElders = getNeighbouringElders(elder);
 
                 if (neighbouringElders.isEmpty()) {
@@ -40,7 +40,7 @@ public class ElderGuardianFight {
 
                     for (Entity participant : participants) {
                         LootWorldContext.Builder builder = new LootWorldContext.Builder(world).add(
-                                        LootContextParameters.ORIGIN, participant.getPos())
+                                        LootContextParameters.ORIGIN, participant.getEntityPos())
                                 .add(LootContextParameters.THIS_ENTITY, participant);
 
                         LootWorldContext lootWorldContext = builder.build(LootContextTypes.GIFT);
@@ -69,7 +69,7 @@ public class ElderGuardianFight {
     }
 
     private static List<ElderGuardianEntity> getNeighbouringElders(ElderGuardianEntity elder) {
-        if (elder.getWorld() instanceof ServerWorld world) {
+        if (elder.getEntityWorld() instanceof ServerWorld world) {
             BlockPos pos = elder.getBlockPos();
             int radius = world.getGameRules().getInt(ModGamerules.ELDER_SEARCH_RADIUS);
             Box area = Box.from(new BlockBox(pos).expand(radius));
@@ -100,7 +100,7 @@ public class ElderGuardianFight {
     }
 
     private static List<Entity> getParticipants(ElderGuardianEntity elder) {
-        if (elder.getWorld() instanceof ServerWorld world) {
+        if (elder.getEntityWorld() instanceof ServerWorld world) {
             return elder.getAttachedOrCreate(ModAttachmentTypes.PARTICIPANTS).stream().map(world::getEntity).toList();
         }
 
@@ -108,7 +108,7 @@ public class ElderGuardianFight {
     }
 
     private static void createRewardEffect(Entity participant) {
-        if (participant.getWorld() instanceof ServerWorld world) {
+        if (participant.getEntityWorld() instanceof ServerWorld world) {
             double x = participant.getX();
             double y = participant.getY();
             double z = participant.getZ();
@@ -120,7 +120,7 @@ public class ElderGuardianFight {
     }
 
     private static void dropLoot(ItemStack stack, Entity participant) {
-        if (participant.getWorld() instanceof ServerWorld serverWorld) {
+        if (participant.getEntityWorld() instanceof ServerWorld serverWorld) {
             ItemEntity itemEntity = participant.dropStack(serverWorld, stack);
             if (itemEntity != null) {
                 itemEntity.setOwner(participant.getUuid());

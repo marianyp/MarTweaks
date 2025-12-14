@@ -19,13 +19,13 @@
     "ServerPlayerEntityMixin",
     "StatHandlerMixin",
     "WorldMixin",
-    "accessor.AdvancementManagerAccesor",
+    "accessor.AdvancementManagerAccessor",
     "accessor.AdvancementProgressAccessor",
-    "accessor.FenceGateBlockAccesor",
+    "accessor.FenceGateBlockAccessor",
     "accessor.ServerPlayerInteractionManagerAccesor",
     "accessor.StemBlockAccessor",
     "accessor.TrackTargetGoalAccessor",
-    "accessor.TrapdoorBlockAccesor"
+    "accessor.TrapdoorBlockAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

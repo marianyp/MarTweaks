@@ -14,11 +14,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
 public class ModModelProvider extends FabricModelProvider {
-    private static final BlockStateVariantMap<ModelVariantOperator> EAST_DEFAULT_HORIZONTAL_ROTATION_OPERATIONS = BlockStateVariantMap.operations(
-                    Properties.HORIZONTAL_FACING).register(Direction.EAST, BlockStateModelGenerator.NO_OP)
-            .register(Direction.SOUTH, BlockStateModelGenerator.ROTATE_Y_90)
-            .register(Direction.WEST, BlockStateModelGenerator.ROTATE_Y_180)
-            .register(Direction.NORTH, BlockStateModelGenerator.ROTATE_Y_270);
+    private static final BlockStateVariantMap<ModelVariantOperator> EAST_DEFAULT_HORIZONTAL_ROTATION_OPERATIONS =
+            BlockStateVariantMap.operations(
+                                        Properties.HORIZONTAL_FACING).register(Direction.EAST, BlockStateModelGenerator.NO_OP)
+                                .register(Direction.SOUTH, BlockStateModelGenerator.ROTATE_Y_90)
+                                .register(Direction.WEST, BlockStateModelGenerator.ROTATE_Y_180)
+                                .register(Direction.NORTH, BlockStateModelGenerator.ROTATE_Y_270);
 
     public ModModelProvider(FabricDataOutput output) {
         super(output);
@@ -41,9 +42,22 @@ public class ModModelProvider extends FabricModelProvider {
         WeightedVariant topVariant = BlockStateModelGenerator.createWeightedVariant(topIdentifier);
         WeightedVariant bottomVariant = BlockStateModelGenerator.createWeightedVariant(bottomIdentifier);
 
-        blockStateModelGenerator.blockStateCollector.accept(VariantsBlockModelDefinitionCreator.of(ModBlocks.SUNFLOWER)
-                .with(BlockStateVariantMap.models(Properties.DOUBLE_BLOCK_HALF)
-                        .register(DoubleBlockHalf.UPPER, topVariant).register(DoubleBlockHalf.LOWER, bottomVariant))
-                .coordinate(EAST_DEFAULT_HORIZONTAL_ROTATION_OPERATIONS));
+        blockStateModelGenerator.blockStateCollector.accept(
+                VariantsBlockModelDefinitionCreator
+                        .of(ModBlocks.SUNFLOWER)
+                        .with(
+                                BlockStateVariantMap
+                                        .models(Properties.DOUBLE_BLOCK_HALF)
+                                        .register(
+                                                DoubleBlockHalf.UPPER,
+                                                topVariant
+                                        )
+                                        .register(
+                                                DoubleBlockHalf.LOWER,
+                                                bottomVariant
+                                        )
+                        )
+                        .apply(EAST_DEFAULT_HORIZONTAL_ROTATION_OPERATIONS)
+        );
     }
 }
