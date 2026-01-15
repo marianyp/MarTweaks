@@ -10,7 +10,6 @@
   "text.config.martweaks-client.title": "MarTweaks Client Config",
   "text.config.martweaks-client.category.durabilityWarning": "Durability Warning",
   "text.config.martweaks-client.category.quickMove": "Quick Move",
-  "text.config.martweaks-client.option.enableEngagementXpRewardSounds": "Enable Engagement Xp Reward Sounds",
   "text.config.martweaks-client.option.durabilityWarning.enabled": "Enable Durability Warning",
   "text.config.martweaks-client.option.durabilityWarning.warnThreshold": "Durability Warning Threshold",
   "text.config.martweaks-client.option.quickMove.enabled": "Enable Quick Move",

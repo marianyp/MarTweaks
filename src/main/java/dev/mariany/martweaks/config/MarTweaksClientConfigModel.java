@@ -10,9 +10,6 @@ import io.wispforest.owo.config.annotation.Nest;
 @Config(name = MarTweaks.MOD_ID + "-client", wrapperName = "MarTweaksClientConfig")
 @Modmenu(modId = MarTweaks.MOD_ID)
 public final class MarTweaksClientConfigModel {
-    @Comment("Rather the XP reward sound should play for things like discovering biomes, crafting new items, etc.")
-    public boolean enableEngagementXpRewardSounds = true;
-
     @Nest
     public DurabilityWarning durabilityWarning = new DurabilityWarning();
 
