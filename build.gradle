@@ -22,6 +22,10 @@ repositories {
     }
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/martweaks.accesswidener")
+}
+
 fabricApi {
     configureDataGeneration {
         client = true

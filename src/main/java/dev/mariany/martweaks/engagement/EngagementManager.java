@@ -23,20 +23,23 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.world.GameRules;
-import org.apache.commons.lang3.function.TriFunction;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 
 public class EngagementManager {
-    public static final Map<StatType<?>, TriFunction<ServerPlayerEntity, Stat<?>, Integer, Boolean>> BEFORE_STAT_INCREMENT_HANDLERS = Map.of(
-            Stats.CRAFTED, Crafting::handle);
+    private static final Map<StatType<?>, EngagementHandler> BEFORE_STAT_INCREMENT_HANDLERS = Map.of(
+            Stats.CRAFTED, Crafting::handle
+    );
 
-    public static final Map<StatType<?>, TriFunction<ServerPlayerEntity, Stat<?>, Integer, Boolean>> AFTER_STAT_INCREMENT_HANDLERS = Map.of(
-            Stats.CUSTOM, Custom::handle, Stats.USED, Building::handle, Stats.MINED, Mining::handle);
+    private static final Map<StatType<?>, EngagementHandler> AFTER_STAT_INCREMENT_HANDLERS = Map.of(
+            Stats.CUSTOM, Custom::handle,
+            Stats.USED, Building::handle,
+            Stats.MINED, Mining::handle
+    );
 
     public static void onDiscover(ServerPlayerEntity player) {
         rewardPlayer(player, MarTweaks.CONFIG.engagementRewards.discoveryMultiplier());
@@ -50,8 +53,36 @@ public class EngagementManager {
 
             if (xp > 0) {
                 if (world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS)) {
-                    ExperienceOrbEntity.spawn(world, Vec3d.ofCenter(pos), xp);
+                    spawnReward(world, pos, xp);
                 }
+            }
+        }
+    }
+
+    private static void spawnReward(ServerPlayerEntity serverPlayer, int amount) {
+        spawnReward(serverPlayer.getEntityWorld(), serverPlayer.getEntityPos(), amount, 20);
+    }
+
+    private static void spawnReward(ServerWorld world, BlockPos pos, int amount) {
+        spawnReward(world, pos.toCenterPos(), amount, -1);
+    }
+
+    private static void spawnReward(ServerWorld world, Vec3d pos, int amount, int remainingTicks) {
+        while (amount > 0) {
+            int i = ExperienceOrbEntity.roundToOrbSize(amount);
+
+            amount -= i;
+
+            if (!ExperienceOrbEntity.wasMergedIntoExistingOrb(world, pos, i)) {
+                ExperienceOrbEntity experienceOrbEntity = new ExperienceOrbEntity(world, pos, Vec3d.ZERO, i);
+
+                if (remainingTicks > 0) {
+                    experienceOrbEntity.age = 6000 - remainingTicks;
+                }
+
+                ((EngagementRewardMarkable) experienceOrbEntity).marTweaks$mark();
+
+                world.spawnEntity(experienceOrbEntity);
             }
         }
     }
@@ -62,7 +93,10 @@ public class EngagementManager {
         }
 
         StatType<?> type = stat.getType();
-        Map<StatType<?>, TriFunction<ServerPlayerEntity, Stat<?>, Integer, Boolean>> handlers = before ? BEFORE_STAT_INCREMENT_HANDLERS : AFTER_STAT_INCREMENT_HANDLERS;
+
+        Map<StatType<?>, EngagementHandler> handlers = before ?
+                BEFORE_STAT_INCREMENT_HANDLERS :
+                AFTER_STAT_INCREMENT_HANDLERS;
 
         if (handlers.containsKey(type)) {
             int statCount = getStatCount(player, stat);
@@ -81,9 +115,10 @@ public class EngagementManager {
     static void rewardPlayer(ServerPlayerEntity player, float multiplier) {
         int min = MarTweaks.CONFIG.engagementRewards.minXPReward();
         int max = MarTweaks.CONFIG.engagementRewards.maxXPReward();
+
         int xpReward = MathHelper.floor(multiplier * MathHelper.nextInt(player.getRandom(), min, max));
-        ServerWorld world = player.getEntityWorld();
-        world.spawnEntity(new ExperienceOrbEntity(world, player.getEntityPos(), Vec3d.ZERO, xpReward));
+
+        spawnReward(player, xpReward);
     }
 
     static int getStatCount(ServerPlayerEntity player, Stat<?> stat) {
@@ -95,6 +130,10 @@ public class EngagementManager {
     }
 
     static void updateRemainingEngagement(ServerPlayerEntity player) {
+        if (player.isSpectator() || player.isCreative()) {
+            return;
+        }
+
         int remainingEngagement = getRemainingEngagement(player) - 1;
 
         if (remainingEngagement < 0) {
@@ -111,6 +150,10 @@ public class EngagementManager {
     static boolean canEngage(ServerPlayerEntity player, Item item, EngagementCache cacheType) {
         boolean strict = player.getEntityWorld().getGameRules().get(ModGamerules.STRICT_ENGAGEMENT).get();
 
+        if (player.isSpectator() || player.isCreative()) {
+            return false;
+        }
+
         if (getRemainingEngagement(player) > 0) {
             return false;
         }
@@ -123,41 +166,45 @@ public class EngagementManager {
         return true;
     }
 
-    static boolean engage(ServerPlayerEntity player, Optional<Pair<EngagementCache, Item>> optionalCache) {
-        return engage(player, true, optionalCache);
+    static boolean engage(ServerPlayerEntity player, @Nullable Pair<EngagementCache, Item> cache) {
+        return engage(player, true, cache);
     }
 
     static boolean engage(ServerPlayerEntity player, boolean criteria) {
-        return engage(player, criteria, Optional.empty());
+        return engage(player, criteria, null);
     }
 
-    static boolean engage(ServerPlayerEntity player, boolean criteria,
-                          Optional<Pair<EngagementCache, Item>> optionalCache) {
+    static boolean engage(ServerPlayerEntity player, boolean criteria, @Nullable Pair<EngagementCache, Item> cache) {
         if (criteria) {
-            if (optionalCache.isPresent()) {
-                Pair<EngagementCache, Item> cache = optionalCache.get();
+            if (cache != null) {
                 EngagementCache.addToCache(player, cache.getLeft(), cache.getRight());
             }
+
             updateRemainingEngagement(player);
         }
         return criteria;
     }
 
-    static Optional<Pair<EngagementCache, Item>> cache(EngagementCache cache, Item item) {
-        return Optional.of(new Pair<>(cache, item));
+    static Pair<EngagementCache, Item> cache(EngagementCache cache, Item item) {
+        return new Pair<>(cache, item);
     }
 
     static class Building {
         static boolean handle(ServerPlayerEntity player, Stat<?> stat, int statCount) {
-            if (MarTweaks.CONFIG.engagementRewards.engagements.rewardBuilding()) {
-                if (stat.getValue() instanceof BlockItem blockItem && !blockItem.getDefaultStack()
-                        .contains(DataComponentTypes.FOOD)) {
+            if (!MarTweaks.CONFIG.engagementRewards.engagements.rewardBuilding()) {
+                return false;
+            }
+
+            if (stat.getValue() instanceof BlockItem blockItem) {
+                if (!blockItem.getDefaultStack().contains(DataComponentTypes.FOOD)) {
                     if (canEngage(player, blockItem, EngagementCache.BUILDING)) {
                         return engage(player, cache(EngagementCache.BUILDING, blockItem));
                     }
+
                     updateRemainingEngagement(player);
                 }
             }
+
             return false;
         }
     }
@@ -195,15 +242,16 @@ public class EngagementManager {
 
     static class Mining {
         static boolean handle(ServerPlayerEntity player, Stat<?> stat, int statCount) {
-            boolean rewardMining = MarTweaks.CONFIG.engagementRewards.engagements.rewardMining();
-            if (rewardMining) {
+            if (MarTweaks.CONFIG.engagementRewards.engagements.rewardMining()) {
                 if (stat.getValue() instanceof Block block) {
-                    boolean rewardHarvestingCrops = MarTweaks.CONFIG.engagementRewards.engagements.rewardHarvestingCrops();
-                    if (rewardHarvestingCrops && ModUtils.isCropLike(block)) {
-                        return false; // Not handling as XP orbs will spawn
+                    if (MarTweaks.CONFIG.engagementRewards.engagements.rewardHarvestingCrops()) {
+                        if (ModUtils.isCropLike(block)) {
+                            return false;
+                        }
                     }
 
                     Item item = block.asItem();
+
                     if (canEngage(player, item, EngagementCache.MINING)) {
                         return engage(player, cache(EngagementCache.MINING, item));
                     }
@@ -214,5 +262,9 @@ public class EngagementManager {
 
             return false;
         }
+    }
+
+    interface EngagementHandler {
+        boolean apply(ServerPlayerEntity player, Stat<?> stat, int statCount);
     }
 }
